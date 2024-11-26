@@ -1,4 +1,4 @@
-package dest.system;
+package camada_dados;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -9,12 +9,11 @@ public class TestDB {
 	// NOTE: Connection and Statement are AutoCloseable.
 	// Don't forget to close them both in order to avoid leaks.
 	public static void main(String[] args) {
-		
+
 		Database db = Database.getInstance();
 		Connection con = db.getConnection();
 
-		try (
-			Statement statement = con.createStatement();) {
+		try (Statement statement = con.createStatement();) {
 			statement.setQueryTimeout(30); // set timeout to 30 sec.
 
 			ResultSet rs = statement.executeQuery("select * from supervisor");

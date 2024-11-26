@@ -1,4 +1,4 @@
-package dest.system;
+package camada_dados;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -78,10 +78,10 @@ public class Database {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
-	    String sqlped = "INSERT INTO pedido (nome, matricula, ira, cargaHora, endereco, infoPrimeiro, " +
-                "nomeEmpresa, endEmpresa, modalidade, cargaHoraSem, valorBolsa, resumo) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+		String sqlped = "INSERT INTO pedido (nome, matricula, ira, cargaHora, endereco, infoPrimeiro, "
+				+ "nomeEmpresa, endEmpresa, modalidade, cargaHoraSem, valorBolsa, resumo) "
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		try (PreparedStatement pstmt = connection.prepareStatement(sqlped)) {
 			// First pedido
