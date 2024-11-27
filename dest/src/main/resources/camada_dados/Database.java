@@ -47,15 +47,21 @@ public class Database {
 	private void createTables() throws SQLException {
 		try (Statement stmt = connection.createStatement()) {
 			// Create person table
+
+			stmt.execute("DROP TABLE IF EXISTS supervisor");
+			stmt.execute("DROP TABLE IF EXISTS pedido");
+
 			stmt.execute("CREATE TABLE IF NOT EXISTS supervisor (" + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
 					+ "nome TEXT NOT NULL, " + "email TEXT UNIQUE," + "senha TEXT," + "funcao TEXT," + "telefone TEXT,"
-					+ "nomeEmpresa TEXT," + "cnpj TEXT UNIQUE," + "numeroEstagio TEXT" + ")");
+					+ "nomeEmpresa TEXT," + "cnpj TEXT UNIQUE,"
+					+ "numeroEstagio INTEGER NULL, FOREIGN KEY(numeroEstagio) REFERENCES pedido(id)" + ")");
 
 			// Create another example table
 			stmt.execute("CREATE TABLE IF NOT EXISTS pedido (" + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
 					+ "nome TEXT, " + "matricula TEXT, " + "ira TEXT, " + "cargaHora TEXT," + "endereco TEXT,"
 					+ "infoPrimeiro TEXT," + "nomeEmpresa TEXT," + "endEmpresa TEXT," + "modalidade TEXT,"
-					+ "cargaHoraSem TEXT," + "valorBolsa TEXT," + "resumo TEXT" + ")");
+					+ "cargaHoraSem TEXT," + "valorBolsa TEXT," + "resumo TEXT," + "supervisorId INTEGER,"
+					+ "FOREIGN KEY(supervisorId) REFERENCES supervisor(id)" + ")");
 
 			// inserir supervisor
 
@@ -72,7 +78,7 @@ public class Database {
 			pstmt.setString(5, "(11) 98765-4321");
 			pstmt.setString(6, "Empresa Tech Solutions");
 			pstmt.setString(7, "12.345.678/0001-90");
-			pstmt.setString(8, "EST2024-001");
+			pstmt.setInt(8, 1);
 			pstmt.executeUpdate();
 			// "FOREIGN KEY(person_id) REFERENCES person(id)" +
 		} catch (SQLException e) {
@@ -80,11 +86,10 @@ public class Database {
 		}
 
 		String sqlped = "INSERT INTO pedido (nome, matricula, ira, cargaHora, endereco, infoPrimeiro, "
-				+ "nomeEmpresa, endEmpresa, modalidade, cargaHoraSem, valorBolsa, resumo) "
-				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				+ "nomeEmpresa, endEmpresa, modalidade, cargaHoraSem, valorBolsa, resumo, supervisorId)"
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		try (PreparedStatement pstmt = connection.prepareStatement(sqlped)) {
-			// First pedido
 			pstmt.setString(1, "Ana Beatriz Souza");
 			pstmt.setString(2, "2023001");
 			pstmt.setString(3, "8.5");
@@ -97,6 +102,7 @@ public class Database {
 			pstmt.setString(10, "30 horas/semana");
 			pstmt.setString(11, "R$ 1.200,00");
 			pstmt.setString(12, "Estudante de Ciência da Computação buscando primeira experiência");
+			pstmt.setInt(13, 1);
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();

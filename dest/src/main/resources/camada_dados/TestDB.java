@@ -5,6 +5,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import camada_dominio.Command;
+import camada_dominio.VerificarNumeroEstagioRTC;
+
 public class TestDB {
 	// NOTE: Connection and Statement are AutoCloseable.
 	// Don't forget to close them both in order to avoid leaks.
@@ -18,15 +21,24 @@ public class TestDB {
 
 			ResultSet rs = statement.executeQuery("select * from supervisor");
 			while (rs.next()) {
-				// read the result set
+				//read the result set
+				System.out.println("id = " + rs.getInt("id"));
 				System.out.println("name = " + rs.getString("nome"));
 				System.out.println("email = " + rs.getString("email"));
 				System.out.println("senha = " + rs.getString("senha"));
 				System.out.println("funcao = " + rs.getString("funcao"));
 				System.out.println("nomeEmpresa = " + rs.getString("nomeEmpresa"));
 				System.out.println("cnpj = " + rs.getString("cnpj"));
-				System.out.println("numeroEst = " + rs.getString("numeroEstagio"));
+				System.out.println("numEst = " + rs.getInt("numeroEstagio"));
 			}
+			
+			rs = statement.executeQuery("select * from pedido");
+			while (rs.next()) {	
+				// read the result set
+				System.out.println("pdId = " + rs.getString("id"));
+			}
+			
+			
 		} catch (SQLException e) {
 			// if the error message is "out of memory",
 			// it probably means no database file is found
