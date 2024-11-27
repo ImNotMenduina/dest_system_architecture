@@ -3,8 +3,10 @@ package camada_dominio;
 import java.sql.Connection;
 
 import camada_dados.Database;
+import camada_dados.GatewayPedido;
 import camada_dados.GatewaySupervisor;
 import entidades.SupervisorDTO;
+import exception.EstagioJaSupervisionadoEx;
 
 public class CriarSupervisorRTC implements Command {
 	private String nome;
@@ -16,7 +18,8 @@ public class CriarSupervisorRTC implements Command {
 	private int numeroPedidoEstagio;
 	private String funcao;
 	
-	private GatewaySupervisor dados = new GatewaySupervisor();
+	private GatewaySupervisor dadossp = new GatewaySupervisor();
+	private GatewayPedido dadospd = new GatewayPedido();
 
 	public CriarSupervisorRTC(String nome, String email, String senha, String telefone, String nomeEmpresa, String cnpj,
 			int numeroPedidoEstagio, String funcao) {
@@ -31,15 +34,17 @@ public class CriarSupervisorRTC implements Command {
 	}
 
 	@Override
-	public Object executar() {	
-		Connection connection = Database.getInstance().getConnection();
+	public Object executar() throws EstagioJaSupervisionadoEx {	
+		//Connection connection = Database.getInstance().getConnection();
 		
-		SupervisorDTO supervisor = dados.buscar(numeroPedidoEstagio);
+		SupervisorDTO supervisor = dadossp.buscar(numeroPedidoEstagio);
 		
 		if (supervisor == null) {			
-			dados.inserir(nome, email, senha, telefone, nomeEmpresa, cnpj, numeroPedidoEstagio, funcao);
+			dadossp.inserir(nome, email, senha, telefone, nomeEmpresa, cnpj, numeroPedidoEstagio, funcao);
+			Integer supervisorId = dadossp.buscarId(email);
+			dadospd.atribuirSupervisor(numeroPedidoEstagio, supervisorId);
 		} else {
-			System.out.println(supervisor.getEmail());
+			throw new EstagioJaSupervisionadoEx("Estágio já supervisionado");
 		}
 		return supervisor;
 	}

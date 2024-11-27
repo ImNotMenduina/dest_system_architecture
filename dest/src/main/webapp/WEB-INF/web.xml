@@ -17,4 +17,8 @@
 		<servlet-name>CriarSupervisorServelet</servlet-name>
 		<url-pattern>/criar</url-pattern>
 	</servlet-mapping>
+
+	<listener>
+		<listener-class>controladores.DatabaseSeederListener</listener-class>
+	</listener>
 </web-app>

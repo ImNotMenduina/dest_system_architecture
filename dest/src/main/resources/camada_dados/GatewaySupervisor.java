@@ -7,6 +7,7 @@ import java.sql.SQLException;
 
 import entidades.PedidoDTO;
 import entidades.SupervisorDTO;
+import exception.EstagioJaSupervisionadoEx;
 
 public class GatewaySupervisor {
 
@@ -56,4 +57,27 @@ public class GatewaySupervisor {
 		}
 	}
 
+	public Integer buscarId(String email) {
+		String sql = "SELECT id FROM supervisor WHERE email = ?";
+
+		try {
+			connection = Database.getInstance().getConnection();
+
+			try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+				pstmt.setString(1, email);
+
+				try (ResultSet rs = pstmt.executeQuery()) {
+					if (rs.next()) {
+						Integer id = (Integer) rs.getObject("id");
+						// VERIFICA SE SUPERVISORID E NULO
+						return id;
+					}
+				}
+			}
+		} catch (SQLException e) {
+			System.err.println("Erro ao buscar pedido: " + e.getMessage());
+			e.printStackTrace();
+		}
+		return null;
+	}
 }

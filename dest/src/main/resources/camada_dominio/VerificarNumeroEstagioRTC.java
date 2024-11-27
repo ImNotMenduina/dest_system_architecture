@@ -21,7 +21,7 @@ public class VerificarNumeroEstagioRTC implements Command {
 
 	@Override
 	public SituacaoPedidoDTO executar() {
-		Database db = Database.getInstance();
+		//Database db = Database.getInstance();
 
 		PedidoDTO pd;
 		try {
@@ -31,7 +31,7 @@ public class VerificarNumeroEstagioRTC implements Command {
 				pd = dados.buscarPedidoSupervisor(numeroPedidoEstagio);
 			} catch (EstagioJaSupervisionadoEx e) {
 				e.printStackTrace();
-				return null;
+				return new SituacaoPedidoDTO(false);
 			}
 			
 			String nomeAluno = pd.getNomeAluno();

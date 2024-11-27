@@ -66,4 +66,23 @@ public class GatewayPedido {
 		}
 		return null;
 	}
+
+	public void atribuirSupervisor(int pedidoId, int supervisorId) {
+	    // Use UPDATE em vez de INSERT
+	    String sql = "UPDATE pedido SET supervisorId = ? WHERE id = ?";
+	    Connection connection = Database.getInstance().getConnection();
+
+	    try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+	        pstmt.setInt(1, supervisorId);
+	        pstmt.setInt(2, pedidoId); 
+	        int rowsAffected = pstmt.executeUpdate();
+	        if (rowsAffected > 0) {
+	            System.out.println("Supervisor atribuído com sucesso ao pedido.");
+	        } else {
+	            System.out.println("Nenhum pedido encontrado com o id especificado.");
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	}
 }
