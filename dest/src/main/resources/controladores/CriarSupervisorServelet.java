@@ -44,9 +44,14 @@ public class CriarSupervisorServelet extends HttpServlet {
 		
 		if (st == null) {
 			request.setAttribute("mensagem", "ERRO: O estágio (" + num + ") já supervisionado.");
-			RequestDispatcher dispatcher = request.getRequestDispatcher("criarSupervisor.jsp");
-			dispatcher.forward(request, response);
-		} 
+		} else {			
+			request.setAttribute("nomeAluno", st.getNomeAluno());
+			request.setAttribute("nomeEmpresa", st.getNomeEmpresa());
+			request.setAttribute("numeroPedido", num);
+		}
+		
+		RequestDispatcher dispatcher = request.getRequestDispatcher("criarSupervisor.jsp");
+		dispatcher.forward(request, response);
 	}
 
 	/**
