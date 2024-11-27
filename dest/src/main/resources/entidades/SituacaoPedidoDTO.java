@@ -1,9 +1,20 @@
 package entidades;
 
 public class SituacaoPedidoDTO {
+	
+	public enum Situacao {
+		INEXISTENTE, EXISTE_SUPERVISOR
+	}
+	
 	private String nomeAluno;
 	private String nomeEmpresa;
 	private boolean situacao;
+	private Situacao err =  null;
+	
+	public SituacaoPedidoDTO(boolean situacao, Situacao err) {
+		this.situacao = situacao;
+		this.err = err;
+	}
 
 	public SituacaoPedidoDTO(String nomeAluno, String nomeEmpresa, boolean b) {
 		this.nomeAluno = nomeAluno;
@@ -25,5 +36,9 @@ public class SituacaoPedidoDTO {
 	
 	public boolean getSituacao() {
 		return this.situacao;
+	}
+	
+	public Situacao getErr() {
+		return this.err;
 	}
 }

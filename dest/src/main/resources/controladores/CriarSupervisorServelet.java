@@ -1,15 +1,13 @@
 package controladores;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 
-import camada_dados.Database;
 import camada_dominio.ContCriarSupervisor;
 import camada_dominio.ContCriarSupervisor.Tipos;
 import entidades.SituacaoPedidoDTO;
+import entidades.SituacaoPedidoDTO.Situacao;
+import exception.CampoInvalidoEx;
+import exception.EmailInvalidoEx;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -43,10 +41,13 @@ public class CriarSupervisorServelet extends HttpServlet {
 
 		SituacaoPedidoDTO st = ct.servico(Tipos.VERIFICAR_NUMERO_ESTAGIO, num);
 
-		if (st == null) {
-			request.setAttribute("mensagem", "ERRO: Pedido de Estágio (" + num + ") inexistente.");
-		} else if (st.getSituacao() == false) {
-			request.setAttribute("mensagem", "ERRO: O estágio (" + num + ") já supervisionado.");
+		if (st.getSituacao() == false) {
+
+			if (st.getErr() == Situacao.INEXISTENTE) {
+				request.setAttribute("mensagem", "ERRO: Pedido de Estágio Inexistente");
+			} else if (st.getErr() == Situacao.EXISTE_SUPERVISOR) {
+				request.setAttribute("mensagem", "ERRO: Estágio (" + num + ") já supervisionado");
+			}
 		} else {
 			request.setAttribute("nomeAluno", st.getNomeAluno());
 			request.setAttribute("nomeEmpresa", st.getNomeEmpresa());
@@ -69,7 +70,18 @@ public class CriarSupervisorServelet extends HttpServlet {
 		String funcao = request.getParameter("funcao");
 
 		ContCriarSupervisor ct = new ContCriarSupervisor();
-		ct.servico(Tipos.CRIAR_SUPERVISOR, nome, email, senha, telefone, nomeEmpresa, cnpj, numeroPedido, funcao);
+
+		try {
+			ct.servico(Tipos.CRIAR_SUPERVISOR, nome, email, senha, telefone, nomeEmpresa, cnpj, numeroPedido, funcao);
+		} catch (EmailInvalidoEx e) {
+			request.setAttribute("mensagem", "ERRO: Email inválido");
+			RequestDispatcher dispatcher = request.getRequestDispatcher("criarSupervisor.jsp");
+			dispatcher.forward(request, response);
+		} catch (CampoInvalidoEx e) {
+			request.setAttribute("mensagem", "ERRO: Um ou mais campos não preenchidos.");
+			RequestDispatcher dispatcher = request.getRequestDispatcher("criarSupervisor.jsp");
+			dispatcher.forward(request, response);
+		}
 
 		response.sendRedirect("index.html");
 	}

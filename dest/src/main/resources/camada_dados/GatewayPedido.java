@@ -6,13 +6,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import entidades.PedidoDTO;
+import entidades.SupervisorDTO;
 import exception.EstagioJaSupervisionadoEx;
 import exception.PedidoEstagioNExistenteEx;
 
 public class GatewayPedido {
 	private Connection connection = null;
 
-	public PedidoDTO buscarPedidoSupervisor(int numeroPedidoEstagio) throws EstagioJaSupervisionadoEx {
+	public SupervisorDTO buscarPedidoSupervisor(int numeroPedidoEstagio) {
 		String sql = "SELECT " + "nome as nome_aluno, nomeEmpresa as nome_empresa, supervisorId as supervisor_id "
 				+ "FROM pedido " + "WHERE id = ?";
 
@@ -27,10 +28,9 @@ public class GatewayPedido {
 						Integer supervisorId = (Integer) rs.getObject("supervisor_id");
 						// VERIFICA SE SUPERVISORID E NULO
 						if (rs.wasNull()) {
-							return new PedidoDTO(rs.getString("nome_aluno"), rs.getString("nome_empresa"));
-						} else {
-							throw new EstagioJaSupervisionadoEx("Estágio já supervisionado");
+							return null;
 						}
+						return new SupervisorDTO(supervisorId, true);
 					}
 				}
 			}
@@ -42,7 +42,7 @@ public class GatewayPedido {
 	}
 
 	// BUSCAR PEDIDO E CRIAR PEDIDODTO
-	public PedidoDTO buscarPedido(int numeroPedidoEstagio) throws PedidoEstagioNExistenteEx {
+	public PedidoDTO buscarPedido(int numeroPedidoEstagio) {
 		String sql = "SELECT " + "nome as nome_aluno, nomeEmpresa as nome_empresa " + "FROM pedido " + "WHERE id = ?";
 
 		try {
@@ -55,9 +55,8 @@ public class GatewayPedido {
 					// VERIFICA SE PEDIDO EXISTE
 					if (rs.next()) {
 						return new PedidoDTO(rs.getString("nome_aluno"), rs.getString("nome_empresa"));
-					} else {
-						throw new PedidoEstagioNExistenteEx("Pedido de estágio não encontrado");
 					}
+					return null;
 				}
 			}
 		} catch (SQLException e) {
@@ -68,21 +67,21 @@ public class GatewayPedido {
 	}
 
 	public void atribuirSupervisor(int pedidoId, int supervisorId) {
-	    // Use UPDATE em vez de INSERT
-	    String sql = "UPDATE pedido SET supervisorId = ? WHERE id = ?";
-	    Connection connection = Database.getInstance().getConnection();
+		// Use UPDATE em vez de INSERT
+		String sql = "UPDATE pedido SET supervisorId = ? WHERE id = ?";
+		Connection connection = Database.getInstance().getConnection();
 
-	    try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-	        pstmt.setInt(1, supervisorId);
-	        pstmt.setInt(2, pedidoId); 
-	        int rowsAffected = pstmt.executeUpdate();
-	        if (rowsAffected > 0) {
-	            System.out.println("Supervisor atribuído com sucesso ao pedido.");
-	        } else {
-	            System.out.println("Nenhum pedido encontrado com o id especificado.");
-	        }
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    }
+		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+			pstmt.setInt(1, supervisorId);
+			pstmt.setInt(2, pedidoId);
+			int rowsAffected = pstmt.executeUpdate();
+			if (rowsAffected > 0) {
+				System.out.println("Supervisor atribuído com sucesso ao pedido.");
+			} else {
+				System.out.println("Nenhum pedido encontrado com o id especificado.");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 }

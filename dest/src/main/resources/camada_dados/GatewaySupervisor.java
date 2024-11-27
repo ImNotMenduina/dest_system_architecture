@@ -14,7 +14,7 @@ public class GatewaySupervisor {
 	private Connection connection = null;
 
 	public SupervisorDTO buscar(int numeroPedidoEstagio) {
-		String sql = "SELECT nome, email FROM supervisor WHERE numeroEstagio = ?";
+		String sql = "SELECT id FROM supervisor WHERE numeroEstagio = ?";
 
 		try {
 			connection = Database.getInstance().getConnection();
@@ -24,7 +24,7 @@ public class GatewaySupervisor {
 
 				try (ResultSet rs = pstmt.executeQuery()) {
 					if (rs.next()) {
-						return new SupervisorDTO(rs.getString("nome"), rs.getString("email"));
+						return new SupervisorDTO(rs.getInt("id"), true);
 					}
 				}
 			}

@@ -1,7 +1,11 @@
 package camada_dominio;
 
 import entidades.SituacaoPedidoDTO;
+import entidades.SituacaoPedidoDTO.Situacao;
+import exception.CampoInvalidoEx;
+import exception.EmailInvalidoEx;
 import exception.EstagioJaSupervisionadoEx;
+import exception.PedidoEstagioNExistenteEx;
 
 public class ContCriarSupervisor {
 	// public CamadaDadosInterface dados = new CamadaDadosMock();
@@ -14,12 +18,13 @@ public class ContCriarSupervisor {
 		switch (tipoServico) {
 		case VERIFICAR_NUMERO_ESTAGIO:
 
-			Command rt = new VerificarNumeroEstagioRTC(numeroPedidoEstagio);
-
 			try {
+				Command rt = new VerificarNumeroEstagioRTC(numeroPedidoEstagio);
 				return (SituacaoPedidoDTO) rt.executar();
 			} catch (EstagioJaSupervisionadoEx e) {
-				e.printStackTrace();
+				return new SituacaoPedidoDTO(false, Situacao.EXISTE_SUPERVISOR);
+			} catch (PedidoEstagioNExistenteEx e) {
+				return new SituacaoPedidoDTO(false, Situacao.INEXISTENTE);
 			}
 
 		default:
@@ -28,23 +33,36 @@ public class ContCriarSupervisor {
 	}
 
 	public Object servico(Tipos tipoServico, String nome, String email, String senha, String telefone,
-			String nomeEmpresa, String cnpj, int numeroPedidoEstagio, String funcao) {
+			String nomeEmpresa, String cnpj, int numeroPedidoEstagio, String funcao)
+			throws EmailInvalidoEx, CampoInvalidoEx {
 		switch (tipoServico) {
 		case CRIAR_SUPERVISOR:
 			Boolean emlValidator = validarEmail(email);
-			Boolean payload = validarCampos(nome, senha, telefone, nomeEmpresa, cnpj, numeroPedidoEstagio, funcao);
 
-			Command rt = new CriarSupervisorRTC(nome, email, senha, telefone, nomeEmpresa, cnpj, numeroPedidoEstagio,
-					funcao);
+			if (emlValidator) {
+				Boolean payload = validarCampos(nome, senha, telefone, nomeEmpresa, cnpj, numeroPedidoEstagio, funcao);
 
-			try {
-				return rt.executar();
-			} catch (EstagioJaSupervisionadoEx e) {
-				e.printStackTrace();
+				if (payload) {
+
+					try {
+						Command rt = new CriarSupervisorRTC(nome, email, senha, telefone, nomeEmpresa, cnpj,
+								numeroPedidoEstagio, funcao);
+						return rt.executar();
+					} catch (EstagioJaSupervisionadoEx e) {
+						return new SituacaoPedidoDTO(false, Situacao.EXISTE_SUPERVISOR);
+					} catch (PedidoEstagioNExistenteEx e) {
+						return new SituacaoPedidoDTO(false, Situacao.INEXISTENTE);
+					}
+				} else {
+					throw new CampoInvalidoEx("Um ou mais campos estão inválidos");
+				}
+			} else {
+				throw new EmailInvalidoEx("Email informado inválido");
 			}
-		}
 
-		return null;
+		default:
+			return null;
+		}
 	}
 
 	public static boolean validarEmail(String email) {

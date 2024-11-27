@@ -6,6 +6,7 @@ import camada_dados.Database;
 import camada_dados.GatewayPedido;
 import entidades.PedidoDTO;
 import entidades.SituacaoPedidoDTO;
+import entidades.SupervisorDTO;
 import exception.EstagioJaSupervisionadoEx;
 import exception.PedidoEstagioNExistenteEx;
 
@@ -20,29 +21,25 @@ public class VerificarNumeroEstagioRTC implements Command {
 	}
 
 	@Override
-	public SituacaoPedidoDTO executar() {
-		//Database db = Database.getInstance();
+	public SituacaoPedidoDTO executar() throws PedidoEstagioNExistenteEx, EstagioJaSupervisionadoEx {
+		// Database db = Database.getInstance();
 
-		PedidoDTO pd;
-		try {
-			pd = dados.buscarPedido(numeroPedidoEstagio);
-			
-			try {
-				pd = dados.buscarPedidoSupervisor(numeroPedidoEstagio);
-			} catch (EstagioJaSupervisionadoEx e) {
-				e.printStackTrace();
-				return new SituacaoPedidoDTO(false);
+		PedidoDTO pd = null;
+
+		pd = dados.buscarPedido(numeroPedidoEstagio);
+
+		if (pd != null) {
+			SupervisorDTO sp = dados.buscarPedidoSupervisor(numeroPedidoEstagio);
+
+			if (sp == null) {
+				String nomeAluno = pd.getNomeAluno();
+				String nomeEmpresa = pd.getNomeEmpresa();
+				return new SituacaoPedidoDTO(nomeAluno, nomeEmpresa, true);
+			} else {
+				throw new EstagioJaSupervisionadoEx("Estágio já supervisionado");
 			}
-			
-			String nomeAluno = pd.getNomeAluno();
-
-			String nomeEmpresa = pd.getNomeEmpresa();
-			
-			return new SituacaoPedidoDTO(nomeAluno, nomeEmpresa, true);
-			
-		} catch (PedidoEstagioNExistenteEx e) {
-			e.printStackTrace();
-			return null;
+		} else {
+			throw new PedidoEstagioNExistenteEx("Pedido de Estágio Inexistente");
 		}
 	}
 }
