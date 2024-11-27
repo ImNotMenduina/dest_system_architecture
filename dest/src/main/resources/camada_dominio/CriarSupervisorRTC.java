@@ -13,13 +13,13 @@ public class CriarSupervisorRTC implements Command {
 	private String telefone;
 	private String nomeEmpresa;
 	private String cnpj;
-	private String numeroPedidoEstagio;
+	private int numeroPedidoEstagio;
 	private String funcao;
 	
 	private GatewaySupervisor dados = new GatewaySupervisor();
 
 	public CriarSupervisorRTC(String nome, String email, String senha, String telefone, String nomeEmpresa, String cnpj,
-			String numeroPedidoEstagio, String funcao) {
+			int numeroPedidoEstagio, String funcao) {
 		this.nome = nome;
 		this.email = email;
 		this.senha = senha;
@@ -34,7 +34,7 @@ public class CriarSupervisorRTC implements Command {
 	public Object executar() {	
 		Connection connection = Database.getInstance().getConnection();
 		
-		SupervisorDTO supervisor = dados.buscar(numeroPedidoEstagio, connection);
+		SupervisorDTO supervisor = dados.buscar(numeroPedidoEstagio);
 		
 		if (supervisor == null) {			
 			dados.inserir(nome, email, senha, telefone, nomeEmpresa, cnpj, numeroPedidoEstagio, funcao);

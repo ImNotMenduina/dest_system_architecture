@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import camada_dominio.Command;
+import camada_dominio.ContCriarSupervisor;
+import camada_dominio.ContCriarSupervisor.Tipos;
 import camada_dominio.VerificarNumeroEstagioRTC;
 
 public class TestDB {
@@ -38,6 +40,24 @@ public class TestDB {
 				System.out.println("pdId = " + rs.getString("id"));
 			}
 			
+			ContCriarSupervisor ct = new ContCriarSupervisor();
+			
+			ct.servico(Tipos.VERIFICAR_NUMERO_ESTAGIO, 2);
+			
+			ct.servico(Tipos.CRIAR_SUPERVISOR, "LUCAS", "lucas@gmailc.om", "123", "219999999", "xxxx", "1231231231", 2, "SEXO");
+			
+			rs = statement.executeQuery("select * from supervisor");
+			while (rs.next()) {
+				//read the result set
+				System.out.println("id = " + rs.getInt("id"));
+				System.out.println("name = " + rs.getString("nome"));
+				System.out.println("email = " + rs.getString("email"));
+				System.out.println("senha = " + rs.getString("senha"));
+				System.out.println("funcao = " + rs.getString("funcao"));
+				System.out.println("nomeEmpresa = " + rs.getString("nomeEmpresa"));
+				System.out.println("cnpj = " + rs.getString("cnpj"));
+				System.out.println("numEst = " + rs.getInt("numeroEstagio"));
+			}
 			
 		} catch (SQLException e) {
 			// if the error message is "out of memory",

@@ -60,7 +60,7 @@ public class Database {
 			stmt.execute("CREATE TABLE IF NOT EXISTS pedido (" + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
 					+ "nome TEXT, " + "matricula TEXT, " + "ira TEXT, " + "cargaHora TEXT," + "endereco TEXT,"
 					+ "infoPrimeiro TEXT," + "nomeEmpresa TEXT," + "endEmpresa TEXT," + "modalidade TEXT,"
-					+ "cargaHoraSem TEXT," + "valorBolsa TEXT," + "resumo TEXT," + "supervisorId INTEGER,"
+					+ "cargaHoraSem TEXT," + "valorBolsa TEXT," + "resumo TEXT," + "supervisorId INTEGER DEFAULT NULL,"
 					+ "FOREIGN KEY(supervisorId) REFERENCES supervisor(id)" + ")");
 
 			// inserir supervisor
@@ -103,6 +103,22 @@ public class Database {
 			pstmt.setString(11, "R$ 1.200,00");
 			pstmt.setString(12, "Estudante de Ciência da Computação buscando primeira experiência");
 			pstmt.setInt(13, 1);
+			pstmt.executeUpdate();
+			
+			pstmt.setString(1, "João Pedro Oliveira");
+			pstmt.setString(2, "2024002");
+			pstmt.setString(3, "9.0");
+			pstmt.setString(4, "8 horas/dia");
+			pstmt.setString(5, "Av. Brasil, 456 - Rio de Janeiro");
+			pstmt.setString(6, "Estágio em Desenvolvimento Web");
+			pstmt.setString(7, "WebSolutions Tecnologia");
+			pstmt.setString(8, "Rua da Conceição, 250 - Rio de Janeiro");
+			pstmt.setString(9, "Híbrido");
+			pstmt.setString(10, "40 horas/semana");
+			pstmt.setString(11, "R$ 1.500,00");
+			pstmt.setString(12, "Estudante de Engenharia de Software com conhecimentos em Java e React");
+			//PEDIDO SEM SUPERVISOR
+			pstmt.setNull(13, java.sql.Types.INTEGER);
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();

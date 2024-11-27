@@ -1,19 +1,13 @@
 package entidades;
 
 public class PedidoDTO {
-	
-	private String nomeSupervisor;
+
 	private String nomeAluno;
 	private String nomeEmpresa;
 	
-	public PedidoDTO(String nomeSupervisor, String nomeAluno, String nomeEmpresa) {
-		this.nomeSupervisor = nomeSupervisor;
+	public PedidoDTO(String nomeAluno, String nomeEmpresa) {
 		this.nomeAluno = nomeAluno;
 		this.nomeEmpresa = nomeEmpresa;
-	}
-
-	public String getNomeSupervisor() {
-		return nomeSupervisor;
 	}
 
 	public String getNomeAluno() {

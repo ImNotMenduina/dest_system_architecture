@@ -10,7 +10,9 @@ public class ContCriarSupervisor {
 	public Object servico(Tipos tipoServico, int numeroPedidoEstagio) {
 		switch (tipoServico) {
 		case VERIFICAR_NUMERO_ESTAGIO:
+			
 			Command rt = new VerificarNumeroEstagioRTC(numeroPedidoEstagio);
+			
 			return rt.executar();
 		default:
 			return null;
@@ -18,7 +20,7 @@ public class ContCriarSupervisor {
 	}
 
 	public Object servico(Tipos tipoServico, String nome, String email, String senha, String telefone,
-			String nomeEmpresa, String cnpj, String numeroPedidoEstagio, String funcao) {
+			String nomeEmpresa, String cnpj, int numeroPedidoEstagio, String funcao) {
 		switch (tipoServico) {
 		case CRIAR_SUPERVISOR:
 			// Boolean emlValidator = validarEmail(email);
