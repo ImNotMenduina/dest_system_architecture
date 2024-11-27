@@ -1,5 +1,7 @@
 package camada_dominio;
 
+import entidades.SituacaoPedidoDTO;
+
 public class ContCriarSupervisor {
 	// public CamadaDadosInterface dados = new CamadaDadosMock();
 
@@ -7,13 +9,13 @@ public class ContCriarSupervisor {
 		VERIFICAR_NUMERO_ESTAGIO, CRIAR_SUPERVISOR
 	}
 
-	public Object servico(Tipos tipoServico, int numeroPedidoEstagio) {
+	public SituacaoPedidoDTO servico(Tipos tipoServico, int numeroPedidoEstagio) {
 		switch (tipoServico) {
 		case VERIFICAR_NUMERO_ESTAGIO:
 			
 			Command rt = new VerificarNumeroEstagioRTC(numeroPedidoEstagio);
 			
-			return rt.executar();
+			return (SituacaoPedidoDTO) rt.executar();
 		default:
 			return null;
 		}

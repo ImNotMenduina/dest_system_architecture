@@ -13,6 +13,16 @@
 	<div>
 		<h1>Criar Supervisor</h1>
 	</div>
+	<%
+	// Verificando se o atributo "mensagem" existe
+		String mensagem = (String) request.getAttribute("mensagem");
+		if (mensagem != null) {
+	%>
+		<h4><%=mensagem%></h4>
+	<%
+		}
+	%>
+	
 	<div>
 		<form method="get" action="criar">
 			<input type="text" placeholder="NUMERO PEDIDO" name="numero" />

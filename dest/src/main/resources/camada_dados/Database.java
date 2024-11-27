@@ -21,8 +21,12 @@ public class Database {
 
 	private Database() {
 		try {
-			connection = DriverManager
-					.getConnection("jdbc:sqlite::resource:" + TestDB.class.getResource("/res/sample.db"));
+			try {
+				Class.forName("org.sqlite.JDBC");
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+			connection = DriverManager.getConnection("jdbc:sqlite:" + TestDB.class.getResource("/res/sample.db"));
 
 			createTables();
 		} catch (SQLException e) {
@@ -104,7 +108,7 @@ public class Database {
 			pstmt.setString(12, "Estudante de Ciência da Computação buscando primeira experiência");
 			pstmt.setInt(13, 1);
 			pstmt.executeUpdate();
-			
+
 			pstmt.setString(1, "João Pedro Oliveira");
 			pstmt.setString(2, "2024002");
 			pstmt.setString(3, "9.0");
@@ -117,7 +121,7 @@ public class Database {
 			pstmt.setString(10, "40 horas/semana");
 			pstmt.setString(11, "R$ 1.500,00");
 			pstmt.setString(12, "Estudante de Engenharia de Software com conhecimentos em Java e React");
-			//PEDIDO SEM SUPERVISOR
+			// PEDIDO SEM SUPERVISOR
 			pstmt.setNull(13, java.sql.Types.INTEGER);
 			pstmt.executeUpdate();
 		} catch (SQLException e) {

@@ -1,5 +1,8 @@
 package camada_dominio;
 
+import java.sql.Connection;
+
+import camada_dados.Database;
 import camada_dados.GatewayPedido;
 import entidades.PedidoDTO;
 import entidades.SituacaoPedidoDTO;
@@ -17,7 +20,8 @@ public class VerificarNumeroEstagioRTC implements Command {
 	}
 
 	@Override
-	public Object executar() {
+	public SituacaoPedidoDTO executar() {
+		Database db = Database.getInstance();
 
 		PedidoDTO pd;
 		try {
