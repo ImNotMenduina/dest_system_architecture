@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import service.IdentificarUsuarioService;
 
 public class IdentificarUsuarioController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -47,7 +48,8 @@ public class IdentificarUsuarioController extends HttpServlet {
 		String senha = request.getParameter("password");
 		ContIdentificarUsuario ct = new ContIdentificarUsuario();
 
-		UsuarioDTO user = ct.servico(Tipos.IDENTIFICAR, email, senha);
+		IdentificarUsuarioService service = new IdentificarUsuarioService();
+		UsuarioDTO user = service.identificarUsuario(email, senha);
 
 		if (user.getSituacao() == false) {
 			if (user.getErr() == Situacao.USUARIO_INVALIDO) {

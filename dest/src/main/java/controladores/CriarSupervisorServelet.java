@@ -13,6 +13,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import service.CriarSupervisorService;
 
 /**
  * Servlet implementation class CriarSupervisorServelet
@@ -35,11 +36,12 @@ public class CriarSupervisorServelet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		Integer num = Integer.parseInt(request.getParameter("numero"));
+		String num = (String) request.getParameter("numero");
 
-		ContCriarSupervisor ct = new ContCriarSupervisor();
+		CriarSupervisorService service = new CriarSupervisorService();
+		SituacaoPedidoDTO st = service.informarNumeroEstagio(num);
 
-		SituacaoPedidoDTO st = ct.servico(Tipos.VERIFICAR_NUMERO_ESTAGIO, num);
+		Integer n = Integer.parseInt(num);
 
 		if (st.getSituacao() == false) {
 
@@ -51,7 +53,7 @@ public class CriarSupervisorServelet extends HttpServlet {
 		} else {
 			request.setAttribute("nomeAluno", st.getNomeAluno());
 			request.setAttribute("nomeEmpresa", st.getNomeEmpresa());
-			request.setAttribute("numeroPedido", num);
+			request.setAttribute("numeroPedido", n);
 		}
 
 		RequestDispatcher dispatcher = request.getRequestDispatcher("criarSupervisor.jsp");
@@ -69,10 +71,10 @@ public class CriarSupervisorServelet extends HttpServlet {
 		Integer numeroPedido = Integer.parseInt(request.getParameter("numeroPedidoEstagio"));
 		String funcao = request.getParameter("funcao");
 
-		ContCriarSupervisor ct = new ContCriarSupervisor();
+		CriarSupervisorService service = new CriarSupervisorService();
 
 		try {
-			ct.servico(Tipos.CRIAR_SUPERVISOR, nome, email, senha, telefone, nomeEmpresa, cnpj, numeroPedido, funcao);
+			service.CriarSupervisor(nome, email, senha, telefone, nomeEmpresa, cnpj, numeroPedido, funcao);
 		} catch (EmailInvalidoEx e) {
 			request.setAttribute("mensagem", "ERRO: Email inválido");
 			RequestDispatcher dispatcher = request.getRequestDispatcher("criarSupervisor.jsp");

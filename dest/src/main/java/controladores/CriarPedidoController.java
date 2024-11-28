@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import service.CriarPedidoIntencaoService;
 
 /**
  * Servlet implementation class CriarPedidoController
@@ -40,9 +41,8 @@ public class CriarPedidoController extends HttpServlet {
 		String endereco = (String) request.getParameter("endereco");
 
 		// System.out.println(ira + " " + chCumprida + " " + endereco);
-		ContCriarPedidoEstagio ct = new ContCriarPedidoEstagio();
-
-		SituacaoDiscenteDTO st = ct.servico(Tipos.VERIFICAR_PEDIDO, ira, chCumprida, endereco);
+		CriarPedidoIntencaoService service = new CriarPedidoIntencaoService();
+		SituacaoDiscenteDTO st = service.verificarPedidoDeEstagio(ira, chCumprida, endereco);
 
 		if (st.getSituacao() == true) {
 			HttpSession session = request.getSession();
@@ -85,9 +85,8 @@ public class CriarPedidoController extends HttpServlet {
 		String valorBolsa = (String) request.getParameter("valorBolsa");
 		String resumo = (String) request.getParameter("resumo");
 
-		ContCriarPedidoEstagio ct = new ContCriarPedidoEstagio();
-
-		SituacaoPedidoDTO st = ct.servico(Tipos.CRIAR_PEDIDO, nome, matricula, ira, cargaHora, endereco, infoPrimeiro,
+		CriarPedidoIntencaoService service = new CriarPedidoIntencaoService();
+		SituacaoPedidoDTO st = service.CriarPedidoDeEstagio(nome, matricula, ira, cargaHora, endereco, infoPrimeiro,
 				nomeEmpresa, endEmpresa, modalidade, cargaHoraSem, valorBolsa, resumo);
 
 		if (st == null) {
