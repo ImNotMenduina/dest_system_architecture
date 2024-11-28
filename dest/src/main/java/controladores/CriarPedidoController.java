@@ -3,7 +3,12 @@ package controladores;
 import java.io.IOException;
 
 import camada_dominio.ContCriarPedidoEstagio;
+import camada_dominio.ContCriarPedidoEstagio.Tipos;
+import camada_dominio.ContIdentificarUsuario;
 import entidades.SituacaoDiscenteDTO;
+import entidades.SituacaoDiscenteDTO.Situacao;
+import entidades.SituacaoPedidoDTO;
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -30,11 +35,26 @@ public class CriarPedidoController extends HttpServlet {
 		Integer chCumprida = Integer.parseInt(request.getParameter("ch_cumprida"));
 		String endereco = (String) request.getParameter("endereco");
 
-		System.out.println(ira + " " + chCumprida + " " + endereco);
-		
+		//System.out.println(ira + " " + chCumprida + " " + endereco);
 		ContCriarPedidoEstagio ct = new ContCriarPedidoEstagio();
 		
-		SituacaoDiscenteDTO st = ct.servico(ira, chCumprida, endereco);
+		SituacaoDiscenteDTO st = ct.servico(Tipos.VERIFICAR_PEDIDO, ira, chCumprida, endereco);
+		
+		if (st.getSituacao() == true) {
+			request.setAttribute("criar_pedido", true);
+			request.setAttribute("ira", ira);
+			request.setAttribute("endereco", endereco);
+			request.setAttribute("chCumprida", chCumprida);
+		} else {
+			if (st.getErr() == Situacao.CH_N_ATENDE) {
+				request.setAttribute("mensagem", "ERRO: CH Cumprida não atende aos requisitos (80h)");
+			} else if (st.getErr() == Situacao.IRA_N_ATENDE) {
+				request.setAttribute("mensagem", "ERRO: IRA não atende aos requisitos minimos (6.0)");
+			}
+		}
+		
+		RequestDispatcher dispatcher = request.getRequestDispatcher("criarPedido.jsp");
+		dispatcher.forward(request, response);
 	}
 
 	/**

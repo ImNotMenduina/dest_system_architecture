@@ -1,11 +1,9 @@
 package camada_dominio;
 
-import camada_dados.GatewayUser;
-import entidades.SituacaoPedidoDTO;
-import entidades.SituacaoPedidoDTO.Situacao;
 import entidades.UsuarioDTO;
-import exception.EstagioJaSupervisionadoEx;
-import exception.PedidoEstagioNExistenteEx;
+import entidades.UsuarioDTO.Situacao;
+import exception.LoginInvalidoEx;
+import exception.UsuarioInvalidoEx;
 
 public class ContIdentificarUsuario {
 	
@@ -21,20 +19,12 @@ public class ContIdentificarUsuario {
 			
 			try {
 				return (UsuarioDTO) rt.executar();
-			} catch (EstagioJaSupervisionadoEx | PedidoEstagioNExistenteEx e) {
-				// TODO Auto-generated catch block
-				//e.printStackTrace();
+			} catch (UsuarioInvalidoEx e) {
+				return new UsuarioDTO(false, Situacao.USUARIO_INVALIDO);
+			} catch (LoginInvalidoEx e) {
+				return new UsuarioDTO(false, Situacao.LOGIN_INVALIDO);
 			}
-			
-//			try {
-//				Command rt = new VerificarNumeroEstagioRTC(numeroPedidoEstagio);
-//				return (SituacaoPedidoDTO) rt.executar();
-//			} catch (EstagioJaSupervisionadoEx e) {
-//				return new SituacaoPedidoDTO(false, Situacao.EXISTE_SUPERVISOR);
-//			} catch (PedidoEstagioNExistenteEx e) {
-//				return new SituacaoPedidoDTO(false, Situacao.INEXISTENTE);
-//			}
-
+		
 		default:
 			return null;
 		}

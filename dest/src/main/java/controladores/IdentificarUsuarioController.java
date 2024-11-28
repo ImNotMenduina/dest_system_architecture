@@ -6,11 +6,15 @@ import camada_dominio.ContCriarPedidoEstagio;
 import camada_dominio.ContIdentificarUsuario;
 import camada_dominio.ContIdentificarUsuario.Tipos;
 import entidades.SituacaoDiscenteDTO;
+import entidades.UsuarioDTO;
+import entidades.UsuarioDTO.Situacao;
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 public class IdentificarUsuarioController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -38,21 +42,28 @@ public class IdentificarUsuarioController extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-	
-		
+
 		String email = request.getParameter("email");
 		String senha = request.getParameter("password");
 		ContIdentificarUsuario ct = new ContIdentificarUsuario();
-		
-		System.out.println(email);
-		System.out.println(senha);
-		
-		System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-		
-		ct.servico(Tipos.IDENTIFICAR, email, senha);
-		
-		System.out.println("okok");
-	
+
+		UsuarioDTO user = ct.servico(Tipos.IDENTIFICAR, email, senha);
+
+		if (user.getSituacao() == false) {
+			if (user.getErr() == Situacao.USUARIO_INVALIDO) {
+				request.setAttribute("mensagem", "ERRO: Usuario Invalido");
+			} else if (user.getErr() == Situacao.LOGIN_INVALIDO) {
+				request.setAttribute("mensagem", "ERRO: Um ou mais campos invalidos");
+			}
+		} else {
+			HttpSession session = request.getSession();
+			
+			session.setAttribute("email", user.getEmail());
+			request.setAttribute("mensagem", "Bem-vindo(a) " + user.getEmail());
+		}
+
+		RequestDispatcher dispatcher = request.getRequestDispatcher("criarPedido.jsp");
+		dispatcher.forward(request, response);
 	}
 
 }

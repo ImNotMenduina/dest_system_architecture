@@ -1,6 +1,6 @@
 package exception;
 
-public class PedidoEstagioNExistenteEx extends Exception {
+public class PedidoEstagioNExistenteEx extends RuntimeException {
 	/**
 	 * 
 	 */

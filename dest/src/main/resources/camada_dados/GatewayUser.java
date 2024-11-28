@@ -24,6 +24,7 @@ public class GatewayUser {
 					if (rs.next()) {
 						return new UsuarioDTO(rs.getString("email"), true);
 					}
+					return null;
 				}
 			}
 		} catch (SQLException e) {

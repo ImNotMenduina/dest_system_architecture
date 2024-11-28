@@ -1,6 +1,6 @@
 package exception;
 
-public class EstagioJaSupervisionadoEx extends Exception {
+public class EstagioJaSupervisionadoEx extends RuntimeException {
 	/**
 	 * 
 	 */

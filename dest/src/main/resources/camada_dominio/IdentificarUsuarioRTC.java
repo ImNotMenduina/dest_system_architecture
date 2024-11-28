@@ -4,7 +4,9 @@ import camada_dados.GatewayUser;
 import entidades.SupervisorDTO;
 import entidades.UsuarioDTO;
 import exception.EstagioJaSupervisionadoEx;
+import exception.LoginInvalidoEx;
 import exception.PedidoEstagioNExistenteEx;
+import exception.UsuarioInvalidoEx;
 
 public class IdentificarUsuarioRTC implements Command {
 
@@ -19,12 +21,20 @@ public class IdentificarUsuarioRTC implements Command {
 	}
 
 	@Override
-	public Object executar() throws EstagioJaSupervisionadoEx, PedidoEstagioNExistenteEx {
+	public Object executar() throws UsuarioInvalidoEx, LoginInvalidoEx {
 		// Connection connection = Database.getInstance().getConnection();
+		
+		if (email.isEmpty() || senha.isEmpty()) {
+			throw new LoginInvalidoEx("Um ou mais campos inválidos.");
+		}
 				
 		UsuarioDTO user = dados.buscar(email, senha);
 		
-		return user;
+		if (user != null) {			
+			return user;
+		} else {
+			throw new UsuarioInvalidoEx("Usuario invalido.");
+		}
 	}
 
 }

@@ -1,7 +1,10 @@
 package camada_dominio;
 
 import entidades.SituacaoDiscenteDTO;
+import entidades.SituacaoDiscenteDTO.Situacao;
 import entidades.SituacaoPedidoDTO;
+import exception.ChNCumpridaEx;
+import exception.IRAnAtendeEx;
 
 public class ContCriarPedidoEstagio {
 
@@ -13,8 +16,15 @@ public class ContCriarPedidoEstagio {
 
 		switch (tipoServico) {
 		case VERIFICAR_PEDIDO:
-
-			// Command rt = new VerificarPedidoEstagioRTC(ira, chCumprida, endereco);
+			
+			try {
+				Command rt = new VerificarPedidoEstagioRTC(ira, chCumprida, endereco);		
+				return (SituacaoDiscenteDTO) rt.executar();
+			} catch (ChNCumpridaEx e){
+				return new SituacaoDiscenteDTO(false, Situacao.CH_N_ATENDE);
+			} catch (IRAnAtendeEx e) {
+				return new SituacaoDiscenteDTO(false, Situacao.IRA_N_ATENDE);
+			}
 
 		default:
 			break;

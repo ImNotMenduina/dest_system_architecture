@@ -1,6 +1,6 @@
 package exception;
 
-public class CampoInvalidoEx extends Exception {
+public class CampoInvalidoEx extends RuntimeException {
 	/**
 	 * 
 	 */
