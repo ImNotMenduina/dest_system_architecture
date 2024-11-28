@@ -82,13 +82,13 @@ public class Database {
 					pstmt.setString(1, "Ana Beatriz Souza");
 					pstmt.setString(2, "2023001");
 					pstmt.setString(3, "8.5");
-					pstmt.setString(4, "6 horas/dia");
+					pstmt.setString(4, "6.0");
 					pstmt.setString(5, "Rua Principal, 123 - São Paulo");
 					pstmt.setString(6, "Primeiro estágio");
 					pstmt.setString(7, "Tech Innovations");
 					pstmt.setString(8, "Av. Paulista, 1000 - São Paulo");
 					pstmt.setString(9, "Remoto");
-					pstmt.setString(10, "30 horas/semana");
+					pstmt.setString(10, "30.0");
 					pstmt.setString(11, "R$ 1.200,00");
 					pstmt.setString(12, "Estudante de Ciência da Computação buscando primeira experiência");
 					pstmt.setInt(13, 1);
@@ -97,13 +97,13 @@ public class Database {
 					pstmt.setString(1, "João Pedro Oliveira");
 					pstmt.setString(2, "2024002");
 					pstmt.setString(3, "9.0");
-					pstmt.setString(4, "8 horas/dia");
+					pstmt.setString(4, "8.0");
 					pstmt.setString(5, "Av. Brasil, 456 - Rio de Janeiro");
 					pstmt.setString(6, "Estágio em Desenvolvimento Web");
 					pstmt.setString(7, "WebSolutions Tecnologia");
 					pstmt.setString(8, "Rua da Conceição, 250 - Rio de Janeiro");
 					pstmt.setString(9, "Híbrido");
-					pstmt.setString(10, "40 horas/semana");
+					pstmt.setString(10, "40.0");
 					pstmt.setString(11, "R$ 1.500,00");
 					pstmt.setString(12, "Estudante de Engenharia de Software com conhecimentos em Java e React");
 					// PEDIDO SEM SUPERVISOR

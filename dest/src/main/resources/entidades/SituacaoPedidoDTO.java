@@ -1,16 +1,16 @@
 package entidades;
 
 public class SituacaoPedidoDTO {
-	
+
 	public enum Situacao {
-		INEXISTENTE, EXISTE_SUPERVISOR
+		INEXISTENTE, EXISTE_SUPERVISOR, CH_MAX
 	}
-	
+
 	private String nomeAluno;
 	private String nomeEmpresa;
 	private boolean situacao;
-	private Situacao err =  null;
-	
+	private Situacao err = null;
+
 	public SituacaoPedidoDTO(boolean situacao, Situacao err) {
 		this.situacao = situacao;
 		this.err = err;
@@ -21,23 +21,23 @@ public class SituacaoPedidoDTO {
 		this.nomeEmpresa = nomeEmpresa;
 		this.situacao = b;
 	}
-	
-	public SituacaoPedidoDTO(boolean b) {
-		this.situacao = b;
+
+	public SituacaoPedidoDTO(boolean st) {
+		this.situacao = st;
 	}
-	
+
 	public String getNomeAluno() {
 		return this.nomeAluno;
 	}
-	
+
 	public String getNomeEmpresa() {
 		return this.nomeEmpresa;
 	}
-	
+
 	public boolean getSituacao() {
 		return this.situacao;
 	}
-	
+
 	public Situacao getErr() {
 		return this.err;
 	}

@@ -84,4 +84,35 @@ public class GatewayPedido {
 			e.printStackTrace();
 		}
 	}
+
+	public void armazenarPedidoEstagio(String nome, String matricula, String ira, String ch, String endereco,
+			String infoPrimeiro, String nomeEmpresa, String endEmpresa, String modalidade, String chSemanal,
+			String valorBolsa, String resumo) {
+		String sql = "INSERT INTO pedido (nome, matricula, ira, cargaHora, endereco, infoPrimeiro, "
+				+ "nomeEmpresa, endEmpresa, modalidade, cargaHoraSem, valorBolsa, resumo, supervisorId) "
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		Connection connection = Database.getInstance().getConnection();
+
+		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+			pstmt.setString(1, nome);
+			pstmt.setString(2, matricula);
+			pstmt.setString(3, ira);
+			pstmt.setString(4, ch);
+			pstmt.setString(5, endereco);
+			pstmt.setString(6, infoPrimeiro);
+			pstmt.setString(7, nomeEmpresa);
+			pstmt.setString(8, endEmpresa);
+			pstmt.setString(9, modalidade);
+			pstmt.setString(10, chSemanal);
+			pstmt.setString(11, valorBolsa);
+			pstmt.setString(12, resumo);
+			pstmt.setNull(13, java.sql.Types.INTEGER);
+			pstmt.executeUpdate();
+
+			System.out.println("PEDIDO INSERIDO");
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 }

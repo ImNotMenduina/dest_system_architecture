@@ -48,7 +48,7 @@ public class CriarPedidoController extends HttpServlet {
 			HttpSession session = request.getSession();
 
 			String email = (String) session.getAttribute("email");
-			
+
 			request.setAttribute("email", email);
 			request.setAttribute("pedido", "pedido");
 			request.setAttribute("ira", ira);
@@ -72,8 +72,32 @@ public class CriarPedidoController extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
+		String nome = (String) request.getParameter("nome");
+		String matricula = (String) request.getParameter("matricula");
+		String ira = (String) request.getParameter("ira");
+		String cargaHora = (String) request.getParameter("cargaHora");
+		String endereco = (String) request.getParameter("endereco");
+		String infoPrimeiro = (String) request.getParameter("infoPrimeiro");
+		String nomeEmpresa = (String) request.getParameter("nomeEmpresa");
+		String endEmpresa = (String) request.getParameter("endEmpresa");
+		String modalidade = (String) request.getParameter("modalidade");
+		String cargaHoraSem = (String) request.getParameter("cargaHoraSem");
+		String valorBolsa = (String) request.getParameter("valorBolsa");
+		String resumo = (String) request.getParameter("resumo");
+
+		ContCriarPedidoEstagio ct = new ContCriarPedidoEstagio();
+
+		SituacaoPedidoDTO st = ct.servico(Tipos.CRIAR_PEDIDO, nome, matricula, ira, cargaHora, endereco, infoPrimeiro,
+				nomeEmpresa, endEmpresa, modalidade, cargaHoraSem, valorBolsa, resumo);
+
+		if (st == null) {
+			request.setAttribute("mensagem", "Pedido Criado !");
+		} else {
+			request.setAttribute("mensagem", "ERRO: Carga horaria maxima semanal não atende aos requisitos (<= 30h)");
+		}
+
+		RequestDispatcher dispatcher = request.getRequestDispatcher("criarPedido.jsp");
+		dispatcher.forward(request, response);
 	}
 
 }
