@@ -3,8 +3,11 @@ package camada_dados;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import entidades.UsuarioDTO;
 
 public class Database {
 
@@ -42,12 +45,15 @@ public class Database {
 				stmt.execute("CREATE TABLE IF NOT EXISTS pedido (" + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
 						+ "nome TEXT, " + "matricula TEXT, " + "ira TEXT, " + "cargaHora TEXT," + "endereco TEXT,"
 						+ "infoPrimeiro TEXT," + "nomeEmpresa TEXT," + "endEmpresa TEXT," + "modalidade TEXT,"
-						+ "cargaHoraSem TEXT," + "valorBolsa TEXT," + "resumo TEXT,"
-						+ "supervisorId INTEGER NULL," + "FOREIGN KEY(supervisorId) REFERENCES supervisor(id)"
-						+ ")");
+						+ "cargaHoraSem TEXT," + "valorBolsa TEXT," + "resumo TEXT," + "supervisorId INTEGER NULL,"
+						+ "FOREIGN KEY(supervisorId) REFERENCES supervisor(id)" + ")");
+
+				stmt.execute("CREATE TABLE IF NOT EXISTS aluno (" + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+						+ "email TEXT UNIQUE, " + "senha TEXT" + ")");
 
 				System.out.println("Table Created");
 
+				// TABLE SUPERVISOR
 				String sqlsup = "INSERT INTO supervisor (nome, email, senha, funcao, telefone, nomeEmpresa, cnpj, numeroEstagio) "
 						+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -67,6 +73,7 @@ public class Database {
 					e.printStackTrace();
 				}
 
+				// TABLE PEDIDOS
 				String sqlped = "INSERT INTO pedido (nome, matricula, ira, cargaHora, endereco, infoPrimeiro, "
 						+ "nomeEmpresa, endEmpresa, modalidade, cargaHoraSem, valorBolsa, resumo, supervisorId)"
 						+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -102,12 +109,22 @@ public class Database {
 					// PEDIDO SEM SUPERVISOR
 					pstmt.setNull(13, java.sql.Types.INTEGER);
 					pstmt.executeUpdate();
-					
-					System.out.println("Values ok ");
+
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
-				
+
+				// TABLE ALUNO
+				String sqlalun = "INSERT INTO aluno (email, senha) " + "VALUES (?, ?)";
+
+				try (PreparedStatement pstmt = connection.prepareStatement(sqlalun)) {
+					pstmt.setString(1, "lucas@gmail.com");
+					pstmt.setString(2, "123");
+					pstmt.executeUpdate();
+
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
 				System.out.println("Banco de dados inicializado com sucesso!");
 			}
 

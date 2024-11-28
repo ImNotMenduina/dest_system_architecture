@@ -13,7 +13,7 @@
 		</div>
 		<h1>Login</h1>
 		<div>
-			<form method="post" action="">
+			<form method=post action="login_user">
 				<div>
 					<input type="text" placeholder="EMAIL" name="email" />
 				</div>

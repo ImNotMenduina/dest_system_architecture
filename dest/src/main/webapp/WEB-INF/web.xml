@@ -18,6 +18,26 @@
 		<url-pattern>/criar</url-pattern>
 	</servlet-mapping>
 
+	<servlet>
+		<servlet-name>CriarPedidoController</servlet-name>
+		<servlet-class>controladores.CriarPedidoController</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>CriarPedidoController</servlet-name>
+		<url-pattern>/criar_pedido</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>IdentificarUsuarioController</servlet-name>
+		<servlet-class>controladores.IdentificarUsuarioController</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>IdentificarUsuarioController</servlet-name>
+		<url-pattern>/login_user</url-pattern>
+	</servlet-mapping>
+
 	<listener>
 		<listener-class>controladores.DatabaseSeederListener</listener-class>
 	</listener>
