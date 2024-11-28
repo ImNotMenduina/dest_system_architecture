@@ -16,6 +16,7 @@
 
 	<%
 	// Verificando se o atributo "mensagem" existe
+	String emailUsuario = (String) session.getAttribute("email");
 	String mensagem = (String) request.getAttribute("mensagem");
 	if (mensagem != null) {
 	%>
@@ -25,35 +26,12 @@
 	%>
 
 	<%
-	String email = (String) session.getAttribute("email");
-	if (email != null) {
+	if (emailUsuario != null) {
 	%>
 	<h4>
 		Conta :
-		<%=email%></h4>
-	<%
-	} else {
-	%>
-	<h1>Login</h1>
-	<div>
-		<form method=post action="login_user">
-			<div>
-				<input type="text" placeholder="EMAIL" name="email" />
-			</div>
-			<div>
-				<input type="password" placeholder="SENHA" name="password" />
-			</div>
-			<button type="submit">Sign in</button>
-		</form>
-	</div>
-	<%
-	}
-	%>
-
-	<%
-	Integer numeroPedido = (Integer) request.getAttribute("numeroPedido");
-	%>
-
+		<%=emailUsuario%>
+	</h4>
 	<div>
 		<form method="get" action="criar_pedido">
 			<div>
@@ -81,86 +59,78 @@
 			<button type="submit">Enviar</button>
 		</form>
 	</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	<%
+	} else {
+	%>
+	<h1>Login</h1>
 	<div>
-		<%
-		String aluno = (String) request.getAttribute("nomeAluno");
-		String empresa = (String) request.getAttribute("nomeEmpresa");
-		if (aluno != null) {
-		%>
-		<div>
-			<diV>
-				<label for="aluno">Aluno</label>
-				<div>
-					<input id="aluno" type="text" placeholder="NUMERO PEDIDO"
-						name="aluno" value="<%=aluno%>" readonly />
-				</div>
-			</diV>
+		<form method=post action="login_user">
 			<div>
-				<label for="empresa">Empresa</label>
-				<div>
-					<input id="empresa" type="text" placeholder="NUMERO PEDIDO"
-						name="empresa" value="<%=empresa%>" readonly />
-				</div>
+				<input type="text" placeholder="EMAIL" name="email" />
 			</div>
-		</div>
-
-		<form method="post" action="criar">
 			<div>
-				<label for="nome">Nome do Supervisor</label>
-				<div>
-					<input id="nome" type="text" placeholder="Nome" name="supervisor" />
-				</div>
+				<input type="password" placeholder="SENHA" name="password" />
 			</div>
+			<button type="submit">Sign in</button>
+		</form>
+	</div>
+	<%
+	}
+	%>
 
+	<%
+	Integer numeroPedido = (Integer) request.getAttribute("numeroPedido");
+	String pedidost = (String) request.getAttribute("pedido");
+	%>
+
+	<%
+	if (pedidost == "pedido") {
+	%>
+	<div>
+		<form method="post" action="criar_pedido">
 			<div>
-				<label for="email">Email</label>
+				<label for="nome">Nome</label>
 				<div>
-					<input id="email" type="email" placeholder="Email" name="email" />
+					<input id="nome" type="text" placeholder="Nome" name="nome" />
 				</div>
 			</div>
 
 			<div>
-				<label for="senha">Senha</label>
+				<label for="matricula">Matrícula</label>
 				<div>
-					<input id="senha" type="password" placeholder="Senha" name="senha" />
+					<input id="matricula" type="text" placeholder="Matrícula"
+						name="matricula" />
 				</div>
 			</div>
 
 			<div>
-				<label for="telefone">Telefone</label>
+				<label for="ira">IRA</label>
 				<div>
-					<input id="telefone" type="tel" placeholder="Telefone"
-						name="telefone" />
+					<input id="ira" type="number" placeholder="IRA" name="ira" />
+				</div>
+			</div>
+
+			<div>
+				<label for="cargaHora">Carga Horária</label>
+				<div>
+					<input id="cargaHora" type="number" placeholder="Carga Horária"
+						name="cargaHora" />
+				</div>
+			</div>
+
+			<div>
+				<label for="endereco">Endereço</label>
+				<div>
+					<input id="endereco" type="text" placeholder="Endereço"
+						name="endereco" />
+				</div>
+			</div>
+
+			<div>
+				<label for="infoPrimeiro">Informações do Primeiro Semestre</label>
+				<div>
+					<input id="infoPrimeiro" type="text"
+						placeholder="Informações do Primeiro Semestre" name="infoPrimeiro" />
 				</div>
 			</div>
 
@@ -168,40 +138,55 @@
 				<label for="nomeEmpresa">Nome da Empresa</label>
 				<div>
 					<input id="nomeEmpresa" type="text" placeholder="Nome da Empresa"
-						name="nomeEmpresa" value="<%=empresa%>" />
+						name="nomeEmpresa" />
 				</div>
 			</div>
 
 			<div>
-				<label for="cnpj">CNPJ</label>
+				<label for="endEmpresa">Endereço da Empresa</label>
 				<div>
-					<input id="cnpj" type="text" placeholder="CNPJ" name="cnpj" />
+					<input id="endEmpresa" type="text"
+						placeholder="Endereço da Empresa" name="endEmpresa" />
 				</div>
 			</div>
 
 			<div>
-				<label for="numeroPedidoEstagio">Número do Pedido de Estágio</label>
+				<label for="modalidade">Modalidade</label>
 				<div>
-					<input id="numeroPedidoEstagio" type="number"
-						placeholder="Número do Pedido de Estágio"
-						name="numeroPedidoEstagio" value="<%=numeroPedido%>" />
+					<input id="modalidade" type="text" placeholder="Modalidade"
+						name="modalidade" />
 				</div>
 			</div>
 
 			<div>
-				<label for="funcao">Função</label>
+				<label for="cargaHoraSem">Carga Horária Semanal</label>
 				<div>
-					<input id="funcao" type="text" placeholder="Função" name="funcao" />
+					<input id="cargaHoraSem" type="number"
+						placeholder="Carga Horária Semanal" name="cargaHoraSem" />
+				</div>
+			</div>
+
+			<div>
+				<label for="valorBolsa">Valor da Bolsa</label>
+				<div>
+					<input id="valorBolsa" type="number" placeholder="Valor da Bolsa"
+						name="valorBolsa" />
+				</div>
+			</div>
+
+			<div>
+				<label for="resumo">Resumo</label>
+				<div>
+					<input id="resumo" type="text" placeholder="Resumo" name="resumo" />
 				</div>
 			</div>
 			<div>
-				<button type="submit">Cadastrar</button>
+				<button type="submit">Cadastrar Pedido</button>
 			</div>
 		</form>
-		<%
-		}
-		%>
-
 	</div>
+	<%
+	}
+	%>
 </body>
 </html>
