@@ -2,6 +2,7 @@ package camada_dominio;
 
 import java.io.IOException;
 
+import camada_dados.GatewayPedido;
 import entidades.SituacaoDiscenteDTO;
 import entidades.SituacaoDiscenteDTO.Situacao;
 import entidades.SituacaoPedidoDTO;
@@ -17,6 +18,7 @@ import jakarta.servlet.http.HttpSession;
 
 public class ContCriarPedidoEstagio extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private GatewayPedido dadosPedido = new GatewayPedido();
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -81,7 +83,12 @@ public class ContCriarPedidoEstagio extends HttpServlet {
 		try {
 			Command rt = new CriarPedidoDeEstagioRTC(nome, matricula, ira, cargaHora, endereco, infoPrimeiro,
 					nomeEmpresa, endEmpresa, modalidade, cargaHoraSem, valorBolsa, resumo);
+			
 			st = (SituacaoPedidoDTO) rt.executar();
+			
+			dadosPedido.armazenarPedidoEstagio(nome, matricula, ira, cargaHora, endereco, infoPrimeiro, nomeEmpresa,
+					endEmpresa, modalidade, cargaHoraSem, valorBolsa, resumo);
+			
 		} catch (ChMaxNCumpridaEx e) {
 			st = new SituacaoPedidoDTO(false);
 		}
