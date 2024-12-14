@@ -19,12 +19,12 @@
 	</servlet-mapping>
 
 	<servlet>
-		<servlet-name>CriarPedidoController</servlet-name>
-		<servlet-class>controladores.CriarPedidoController</servlet-class>
+		<servlet-name>ContCriarPedidoEstagio</servlet-name>
+		<servlet-class>camada_dominio.ContCriarPedidoEstagio</servlet-class>
 	</servlet>
 
 	<servlet-mapping>
-		<servlet-name>CriarPedidoController</servlet-name>
+		<servlet-name>ContCriarPedidoEstagio</servlet-name>
 		<url-pattern>/criar_pedido</url-pattern>
 	</servlet-mapping>
 
