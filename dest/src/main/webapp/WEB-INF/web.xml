@@ -9,13 +9,13 @@
 	<display-name>Archetype Created Web Application</display-name>
 
 	<servlet>
-		<servlet-name>CriarSupervisorServelet</servlet-name>
-		<servlet-class>controladores.CriarSupervisorServelet</servlet-class>
+		<servlet-name>ContCriarSupervisor</servlet-name>
+		<servlet-class>camada_dominio.ContCriarSupervisor</servlet-class>
 	</servlet>
 
 	<servlet-mapping>
-		<servlet-name>CriarSupervisorServelet</servlet-name>
-		<url-pattern>/criar</url-pattern>
+		<servlet-name>ContCriarSupervisor</servlet-name>
+		<url-pattern>/criar_supervisor</url-pattern>
 	</servlet-mapping>
 
 	<servlet>

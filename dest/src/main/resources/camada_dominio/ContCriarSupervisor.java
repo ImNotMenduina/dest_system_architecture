@@ -1,87 +1,94 @@
 package camada_dominio;
 
+import java.io.IOException;
+
+import camada_dados.GatewayPedido;
+import camada_dados.GatewaySupervisor;
+import entidades.PedidoDTO;
 import entidades.SituacaoPedidoDTO;
-import entidades.SituacaoPedidoDTO.Situacao;
+import entidades.SupervisorDTO;
 import exception.CampoInvalidoEx;
 import exception.EmailInvalidoEx;
 import exception.EstagioJaSupervisionadoEx;
 import exception.PedidoEstagioNExistenteEx;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-public class ContCriarSupervisor {
-	// public CamadaDadosInterface dados = new CamadaDadosMock();
+public class ContCriarSupervisor extends HttpServlet {
+	private static final long serialVersionUID = 1L;
 
-	public enum Tipos {
-		VERIFICAR_NUMERO_ESTAGIO, CRIAR_SUPERVISOR
-	}
+	private GatewaySupervisor dadosSupervisor = new GatewaySupervisor();
+	private GatewayPedido dadosPedido = new GatewayPedido();
 
-	public SituacaoPedidoDTO servico(Tipos tipoServico, int numeroPedidoEstagio) {
-		switch (tipoServico) {
-		case VERIFICAR_NUMERO_ESTAGIO:
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
-			try {
-				Command rt = new VerificarNumeroEstagioRTC(numeroPedidoEstagio);
-				return (SituacaoPedidoDTO) rt.executar();
-			} catch (EstagioJaSupervisionadoEx e) {
-				return new SituacaoPedidoDTO(false, Situacao.EXISTE_SUPERVISOR);
-			} catch (PedidoEstagioNExistenteEx e) {
-				return new SituacaoPedidoDTO(false, Situacao.INEXISTENTE);
-			}
+		Integer numeroPedidoEstagio = Integer.parseInt(request.getParameter("numero"));
 
-		default:
-			return null;
-		}
-	}
+		SituacaoPedidoDTO st = null;
 
-	public Object servico(Tipos tipoServico, String nome, String email, String senha, String telefone,
-			String nomeEmpresa, String cnpj, int numeroPedidoEstagio, String funcao)
-			throws EmailInvalidoEx, CampoInvalidoEx {
-		switch (tipoServico) {
-		case CRIAR_SUPERVISOR:
-			Boolean emlValidator = validarEmail(email);
+		try {
+			PedidoDTO pd = dadosPedido.buscarPedido(numeroPedidoEstagio);
+			SupervisorDTO sp = dadosPedido.buscarPedidoSupervisor(numeroPedidoEstagio);
 
-			if (emlValidator) {
-				Boolean payload = validarCampos(nome, senha, telefone, nomeEmpresa, cnpj, numeroPedidoEstagio, funcao);
+			st = new SituacaoPedidoDTO(pd.getNomeAluno(), pd.getNomeEmpresa(), true);
 
-				if (payload) {
+			request.setAttribute("nomeAluno", st.getNomeAluno());
+			request.setAttribute("nomeEmpresa", st.getNomeEmpresa());
+			request.setAttribute("numeroPedido", numeroPedidoEstagio);
 
-					try {
-						Command rt = new CriarSupervisorRTC(nome, email, senha, telefone, nomeEmpresa, cnpj,
-								numeroPedidoEstagio, funcao);
-						return rt.executar();
-					} catch (EstagioJaSupervisionadoEx e) {
-						return new SituacaoPedidoDTO(false, Situacao.EXISTE_SUPERVISOR);
-					} catch (PedidoEstagioNExistenteEx e) {
-						return new SituacaoPedidoDTO(false, Situacao.INEXISTENTE);
-					}
-				} else {
-					throw new CampoInvalidoEx("Um ou mais campos estão inválidos");
-				}
-			} else {
-				throw new EmailInvalidoEx("Email informado inválido");
-			}
-
-		default:
-			return null;
-		}
-	}
-
-	public static boolean validarEmail(String email) {
-		if (email == null || email.isEmpty()) {
-			return false;
+		} catch (EstagioJaSupervisionadoEx e) {
+			request.setAttribute("mensagem", "ERRO: Estágio (" + numeroPedidoEstagio + ") já supervisionado");
+		} catch (PedidoEstagioNExistenteEx e) {
+			request.setAttribute("mensagem", "ERRO: Pedido de Estágio Inexistente");
 		}
 
-		String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
-
-		return email.matches(emailRegex);
+		RequestDispatcher dispatcher = request.getRequestDispatcher("criarSupervisor.jsp");
+		dispatcher.forward(request, response);
 	}
 
-	public Boolean validarCampos(String nome, String senha, String telefone, String nomeEmpresa, String cnpj,
-			Integer numeroPedidoEstagio, String funcao) {
-		return !(isNullOrEmpty(nome) || isNullOrEmpty(senha) || isNullOrEmpty(telefone) || isNullOrEmpty(nomeEmpresa)
-				|| isNullOrEmpty(cnpj) || numeroPedidoEstagio == null || isNullOrEmpty(funcao));
-	}
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		String nome = request.getParameter("supervisor");
+		String email = request.getParameter("email");
+		String senha = request.getParameter("senha");
+		String telefone = request.getParameter("telefone");
+		String nomeEmpresa = request.getParameter("nomeEmpresa");
+		String cnpj = request.getParameter("cnpj");
+		Integer numeroPedido = Integer.parseInt(request.getParameter("numeroPedidoEstagio"));
+		String funcao = request.getParameter("funcao");
 
-	private boolean isNullOrEmpty(String str) {
-		return str == null || str.trim().isEmpty();
+		try {
+			SupervisorDTO supervisor = dadosPedido.buscarPedidoSupervisor(numeroPedido);
+
+			Command rt = new CriarSupervisorRTC(nome, email, senha, telefone, nomeEmpresa, cnpj, numeroPedido, funcao);
+			rt.executar();
+
+			// CRIA SUPERVISOR
+			dadosSupervisor.inserir(nome, email, senha, telefone, nomeEmpresa, cnpj, numeroPedido, funcao);
+			// BUSCA QUAL O ID DO SUPERVISOR
+			Integer supervisorId = dadosSupervisor.buscarId(email);
+			// ASSOCIA O SUPERVISOR AO PEDIDO INFORMADO FK
+			dadosPedido.atribuirSupervisor(numeroPedido, supervisorId);
+			
+			request.setAttribute("mensagem", "Supervisor criado com sucesso.");
+			RequestDispatcher dispatcher = request.getRequestDispatcher("criarSupervisor.jsp");
+			dispatcher.forward(request, response);
+		} catch (EmailInvalidoEx e) {
+			request.setAttribute("mensagem", "ERRO: Email inválido");
+			RequestDispatcher dispatcher = request.getRequestDispatcher("criarSupervisor.jsp");
+			dispatcher.forward(request, response);
+		} catch (CampoInvalidoEx e) {
+			request.setAttribute("mensagem", "ERRO: Um ou mais campos não preenchidos.");
+			RequestDispatcher dispatcher = request.getRequestDispatcher("criarSupervisor.jsp");
+			dispatcher.forward(request, response);
+		} catch (EstagioJaSupervisionadoEx e) {
+			request.setAttribute("mensagem", "ERRO: Estágio (" + numeroPedido + ") já supervisionado");
+			RequestDispatcher dispatcher = request.getRequestDispatcher("criarSupervisor.jsp");
+			dispatcher.forward(request, response);
+		}
 	}
 }

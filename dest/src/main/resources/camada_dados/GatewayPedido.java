@@ -13,7 +13,7 @@ import exception.PedidoEstagioNExistenteEx;
 public class GatewayPedido {
 	private Connection connection = null;
 
-	public SupervisorDTO buscarPedidoSupervisor(int numeroPedidoEstagio) {
+	public SupervisorDTO buscarPedidoSupervisor(int numeroPedidoEstagio) throws EstagioJaSupervisionadoEx{
 		String sql = "SELECT " + "nome as nome_aluno, nomeEmpresa as nome_empresa, supervisorId as supervisor_id "
 				+ "FROM pedido " + "WHERE id = ?";
 
@@ -30,19 +30,19 @@ public class GatewayPedido {
 						if (rs.wasNull()) {
 							return null;
 						}
-						return new SupervisorDTO(supervisorId, true);
+						throw new EstagioJaSupervisionadoEx("Estágio já supervisionado");
 					}
 				}
 			}
 		} catch (SQLException e) {
-			System.err.println("Erro ao buscar pedido: " + e.getMessage());
+			System.err.println("Erro ao buscar pedido (gtPedido): " + e.getMessage());
 			e.printStackTrace();
 		}
 		return null;
 	}
 
 	// BUSCAR PEDIDO E CRIAR PEDIDODTO
-	public PedidoDTO buscarPedido(int numeroPedidoEstagio) {
+	public PedidoDTO buscarPedido(int numeroPedidoEstagio) throws PedidoEstagioNExistenteEx{
 		String sql = "SELECT " + "nome as nome_aluno, nomeEmpresa as nome_empresa " + "FROM pedido " + "WHERE id = ?";
 
 		try {
@@ -56,7 +56,7 @@ public class GatewayPedido {
 					if (rs.next()) {
 						return new PedidoDTO(rs.getString("nome_aluno"), rs.getString("nome_empresa"));
 					}
-					return null;
+					throw new PedidoEstagioNExistenteEx("Pedido de Estágio Inexistente");
 				}
 			}
 		} catch (SQLException e) {

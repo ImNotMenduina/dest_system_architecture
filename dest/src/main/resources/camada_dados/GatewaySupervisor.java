@@ -29,7 +29,7 @@ public class GatewaySupervisor {
 				}
 			}
 		} catch (SQLException e) {
-			System.err.println("Erro ao buscar pedido: " + e.getMessage());
+			System.err.println("Erro ao buscar pedido (gtSupervisor): " + e.getMessage());
 			e.printStackTrace();
 		}
 
@@ -41,20 +41,26 @@ public class GatewaySupervisor {
 		String sql = "INSERT INTO supervisor (nome, email, senha, funcao, telefone, nomeEmpresa, cnpj, numeroEstagio) "
 				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-			// First supervisor
-			pstmt.setString(1, nome);
-			pstmt.setString(2, email);
-			pstmt.setString(3, senha);
-			pstmt.setString(4, funcao);
-			pstmt.setString(5, telefone);
-			pstmt.setString(6, nomeEmpresa);
-			pstmt.setString(7, cnpj);
-			pstmt.setInt(8, numeroPedidoEstagio);
-			pstmt.executeUpdate();
+		try {
+			connection = Database.getInstance().getConnection();
+
+			try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+				// First supervisor
+				pstmt.setString(1, nome);
+				pstmt.setString(2, email);
+				pstmt.setString(3, senha);
+				pstmt.setString(4, funcao);
+				pstmt.setString(5, telefone);
+				pstmt.setString(6, nomeEmpresa);
+				pstmt.setString(7, cnpj);
+				pstmt.setInt(8, numeroPedidoEstagio);
+				pstmt.executeUpdate();
+			}
 		} catch (SQLException e) {
+			System.err.println("Erro ao buscar pedido (gtSupervisor): " + e.getMessage());
 			e.printStackTrace();
 		}
+
 	}
 
 	public Integer buscarId(String email) {
