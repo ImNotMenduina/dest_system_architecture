@@ -32,9 +32,9 @@ public class ContCriarSupervisor extends HttpServlet {
 
 		try {
 			PedidoDTO pd = dadosPedido.buscarPedido(numeroPedidoEstagio);
-			SupervisorDTO sp = dadosPedido.buscarPedidoSupervisor(numeroPedidoEstagio);
 
-			st = new SituacaoPedidoDTO(pd.getNomeAluno(), pd.getNomeEmpresa(), true);
+			Command rt = new VerificarPedidoRTC(pd);
+			st = (SituacaoPedidoDTO) rt.executar();
 
 			request.setAttribute("nomeAluno", st.getNomeAluno());
 			request.setAttribute("nomeEmpresa", st.getNomeEmpresa());
@@ -73,7 +73,7 @@ public class ContCriarSupervisor extends HttpServlet {
 			Integer supervisorId = dadosSupervisor.buscarId(email);
 			// ASSOCIA O SUPERVISOR AO PEDIDO INFORMADO FK
 			dadosPedido.atribuirSupervisor(numeroPedido, supervisorId);
-			
+
 			request.setAttribute("mensagem", "Supervisor criado com sucesso.");
 			RequestDispatcher dispatcher = request.getRequestDispatcher("criarSupervisor.jsp");
 			dispatcher.forward(request, response);

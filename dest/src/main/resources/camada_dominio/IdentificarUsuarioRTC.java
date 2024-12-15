@@ -36,5 +36,4 @@ public class IdentificarUsuarioRTC implements Command {
 			throw new UsuarioInvalidoEx("Usuario invalido.");
 		}
 	}
-
 }
