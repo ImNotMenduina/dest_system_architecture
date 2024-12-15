@@ -13,27 +13,28 @@ public class IdentificarUsuarioRTC implements Command {
 	private String email;
 	private String senha;
 
-	private GatewayUser dados = new GatewayUser();
+	private ContIdentificarUsuario cont = null;
 
-	public IdentificarUsuarioRTC(String email, String senha) {
+	public IdentificarUsuarioRTC(String email, String senha, ContIdentificarUsuario cont) {
 		this.email = email;
 		this.senha = senha;
+		this.cont = cont;
 	}
 
 	@Override
 	public Object executar() throws UsuarioInvalidoEx, LoginInvalidoEx {
-		// Connection connection = Database.getInstance().getConnection();
-		
+
 		if (email.isEmpty() || senha.isEmpty()) {
 			throw new LoginInvalidoEx("Um ou mais campos inválidos.");
 		}
-				
-		UsuarioDTO user = dados.buscar(email, senha);
 		
-		if (user != null) {			
-			return user;
-		} else {
+		//MENSAGEM PARA O CONTROLADOR BUSCAR O USUARIO
+		UsuarioDTO user = cont.buscarUsuario(email, senha);
+		
+		if (user == null) {			
 			throw new UsuarioInvalidoEx("Usuario invalido.");
-		}
-	}
+		}	
+		
+		return user;
+	} 
 }
