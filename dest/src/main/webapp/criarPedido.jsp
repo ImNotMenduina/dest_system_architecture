@@ -81,6 +81,8 @@
 	<%
 	Integer numeroPedido = (Integer) request.getAttribute("numeroPedido");
 	String pedidost = (String) request.getAttribute("pedido");
+	Integer ira = (Integer) request.getAttribute("ira");
+	Integer chCumprida = (Integer) request.getAttribute("chCumprida");
 	%>
 
 	<%
@@ -106,7 +108,7 @@
 			<div>
 				<label for="ira">IRA</label>
 				<div>
-					<input id="ira" type="number" placeholder="IRA" name="ira" />
+					<input id="ira" type="number" placeholder="IRA" name="ira" value="<%= ira %>" readonly />
 				</div>
 			</div>
 
@@ -114,7 +116,7 @@
 				<label for="cargaHora">Carga Horária</label>
 				<div>
 					<input id="cargaHora" type="number" placeholder="Carga Horária"
-						name="cargaHora" />
+						name="cargaHora" value="<%= chCumprida %>" readonly/>
 				</div>
 			</div>
 
