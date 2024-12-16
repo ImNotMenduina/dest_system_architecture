@@ -8,7 +8,7 @@
 </head>
 <body>
 	<div>
-		<a href="./index.html">Home</a>
+		<a href="./index.jsp">Home</a>
 	</div>
 	<div>
 		<h1>Criar Pedido</h1>
