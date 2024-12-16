@@ -19,12 +19,12 @@
 	</servlet-mapping>
 
 	<servlet>
-		<servlet-name>ContCriarPedidoEstagio</servlet-name>
-		<servlet-class>camada_dominio.ContCriarPedidoEstagio</servlet-class>
+		<servlet-name>CriarPedidoIntencaoService</servlet-name>
+		<servlet-class>service.CriarPedidoIntencaoService</servlet-class>
 	</servlet>
 
 	<servlet-mapping>
-		<servlet-name>ContCriarPedidoEstagio</servlet-name>
+		<servlet-name>CriarPedidoIntencaoService</servlet-name>
 		<url-pattern>/criar_pedido</url-pattern>
 	</servlet-mapping>
 
@@ -43,6 +43,6 @@
 	</listener>
 
 	<session-config>
-		<session-timeout>30</session-timeout> 
+		<session-timeout>30</session-timeout>
 	</session-config>
 </web-app>
