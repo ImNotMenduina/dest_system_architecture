@@ -1,11 +1,7 @@
 package camada_dominio;
 
-import camada_dados.GatewayUser;
-import entidades.SupervisorDTO;
 import entidades.UsuarioDTO;
-import exception.EstagioJaSupervisionadoEx;
 import exception.LoginInvalidoEx;
-import exception.PedidoEstagioNExistenteEx;
 import exception.UsuarioInvalidoEx;
 import exception.UsuarioLogadoEx;
 
