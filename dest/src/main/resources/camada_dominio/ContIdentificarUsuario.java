@@ -14,50 +14,27 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-public class ContIdentificarUsuario extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+public class ContIdentificarUsuario {
 
 	private GatewayUser dados = new GatewayUser();
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+	public enum Tipos {
+		IDENTIFICAR
+	}
+
+	public UsuarioDTO service(Tipos tipoServico, String email, String senha, boolean log)
 			throws ServletException, IOException {
-
-		String email = request.getParameter("email");
-		String senha = request.getParameter("password");
-
-		RequestDispatcher dispatcher = null;
-		UsuarioDTO user = null;
-		boolean log = false;
-
-		try {
-			// HTTP SESSION - INICIA UMA SESSÃO PARA O CLIENTE
-			HttpSession session = request.getSession(false);
-
-			if (session != null && session.getAttribute("email") != null) {
-				log = true;
-			}
-
+		// HTTP SESSION - INICIA UMA SESSÃO PARA O CLIENTE
+		switch (tipoServico) {
+		case IDENTIFICAR:
 			Command rt = new IdentificarUsuarioRTC(email, senha, this, log);
-			user = (UsuarioDTO) rt.executar();
-
-			session.setAttribute("email", user.getEmail());
-			request.setAttribute("mensagem", "Bem-vindo(a) " + user.getEmail());
-			dispatcher = request.getRequestDispatcher("index.jsp");
-		} catch (UsuarioInvalidoEx e) {
-			request.setAttribute("mensagem", "ERRO: " + e.getMessage());
-			dispatcher = request.getRequestDispatcher("login.jsp");
-		} catch (LoginInvalidoEx e) {
-			request.setAttribute("mensagem", "ERRO: " + e.getMessage());
-			dispatcher = request.getRequestDispatcher("login.jsp");
-		} catch (UsuarioLogadoEx e) {
-			request.setAttribute("mensagem", "ERRO: " + e.getMessage());
-			dispatcher = request.getRequestDispatcher("login.jsp");
+			return (UsuarioDTO) rt.executar();
+		default:
+			return null;
 		}
-		dispatcher.forward(request, response);
 	}
 
 	public UsuarioDTO buscarUsuario(String email, String senha) {
-
 		return dados.buscar(email, senha);
 	}
 }

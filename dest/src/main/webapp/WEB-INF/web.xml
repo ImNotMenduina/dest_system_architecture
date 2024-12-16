@@ -29,12 +29,12 @@
 	</servlet-mapping>
 
 	<servlet>
-		<servlet-name>ContIdentificarUsuario</servlet-name>
-		<servlet-class>camada_dominio.ContIdentificarUsuario</servlet-class>
+		<servlet-name>IdentificarUsuarioService</servlet-name>
+		<servlet-class>service.IdentificarUsuarioService</servlet-class>
 	</servlet>
 
 	<servlet-mapping>
-		<servlet-name>ContIdentificarUsuario</servlet-name>
+		<servlet-name>IdentificarUsuarioService</servlet-name>
 		<url-pattern>/login_user</url-pattern>
 	</servlet-mapping>
 
