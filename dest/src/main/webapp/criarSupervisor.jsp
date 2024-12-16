@@ -8,7 +8,7 @@
 </head>
 <body>
 	<div>
-		<a href="./index.html">Home</a>
+		<a href="./index.jsp">Home</a>
 	</div>
 	<div>
 		<h1>Criar Supervisor</h1>
@@ -28,7 +28,7 @@
 	%>
 
 	<div>
-		<form method="get" action="criar">
+		<form method="get" action="criar_supervisor">
 			<input type="number" placeholder="NUMERO PEDIDO" name="numero"
 				value=<%= numeroPedido %> />
 			<button type="submit">Buscar Pedido</button>
@@ -57,7 +57,7 @@
 			</div>
 		</div>
 
-		<form method="post" action="criar">
+		<form method="post" action="criar_supervisor">
 			<div>
 				<label for="nome">Nome do Supervisor</label>
 				<div>

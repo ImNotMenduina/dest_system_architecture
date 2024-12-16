@@ -1,6 +1,5 @@
 package camada_dominio;
 
-import camada_dados.GatewayPedido;
 import exception.ChMaxNCumpridaEx;
 
 public class CriarPedidoDeEstagioRTC implements Command {
@@ -17,8 +16,6 @@ public class CriarPedidoDeEstagioRTC implements Command {
 	private String valorBolsa;
 	private String resumo;
 	private String ira;
-
-	private GatewayPedido dados = new GatewayPedido();
 
 	public CriarPedidoDeEstagioRTC(String nome, String matricula, String ira, String cargaHora, String endereco,
 			String infoPrimeiro, String nomeEmpresa, String endEmpresa, String modalidade, String cargaHoraSem,
@@ -40,13 +37,10 @@ public class CriarPedidoDeEstagioRTC implements Command {
 	public Object executar() throws ChMaxNCumpridaEx {
 		Float ch_semanal = Float.parseFloat(this.cargaHoraSem);
 
-		if (ch_semanal <= 30.0) {
-			dados.armazenarPedidoEstagio(nome, matricula, ira, cargaHora, endereco, infoPrimeiro, nomeEmpresa,
-					endEmpresa, modalidade, cargaHoraSem, valorBolsa, resumo);
-			return null;
-		} else {
+		if (ch_semanal > 30.0) {
 			throw new ChMaxNCumpridaEx("Carga horaria maxima semanal não atende aos requisitos (<= 30h)");
 		}
+		return null;
 	}
 
 }

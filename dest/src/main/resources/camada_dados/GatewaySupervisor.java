@@ -13,48 +13,31 @@ public class GatewaySupervisor {
 
 	private Connection connection = null;
 
-	public SupervisorDTO buscar(int numeroPedidoEstagio) {
-		String sql = "SELECT id FROM supervisor WHERE numeroEstagio = ?";
-
-		try {
-			connection = Database.getInstance().getConnection();
-
-			try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-				pstmt.setInt(1, numeroPedidoEstagio);
-
-				try (ResultSet rs = pstmt.executeQuery()) {
-					if (rs.next()) {
-						return new SupervisorDTO(rs.getInt("id"), true);
-					}
-				}
-			}
-		} catch (SQLException e) {
-			System.err.println("Erro ao buscar pedido: " + e.getMessage());
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
 	public void inserir(String nome, String email, String senha, String telefone, String nomeEmpresa, String cnpj,
 			int numeroPedidoEstagio, String funcao) {
 		String sql = "INSERT INTO supervisor (nome, email, senha, funcao, telefone, nomeEmpresa, cnpj, numeroEstagio) "
 				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-			// First supervisor
-			pstmt.setString(1, nome);
-			pstmt.setString(2, email);
-			pstmt.setString(3, senha);
-			pstmt.setString(4, funcao);
-			pstmt.setString(5, telefone);
-			pstmt.setString(6, nomeEmpresa);
-			pstmt.setString(7, cnpj);
-			pstmt.setInt(8, numeroPedidoEstagio);
-			pstmt.executeUpdate();
+		try {
+			connection = Database.getInstance().getConnection();
+
+			try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+				// First supervisor
+				pstmt.setString(1, nome);
+				pstmt.setString(2, email);
+				pstmt.setString(3, senha);
+				pstmt.setString(4, funcao);
+				pstmt.setString(5, telefone);
+				pstmt.setString(6, nomeEmpresa);
+				pstmt.setString(7, cnpj);
+				pstmt.setInt(8, numeroPedidoEstagio);
+				pstmt.executeUpdate();
+			}
 		} catch (SQLException e) {
+			System.err.println("Erro ao buscar pedido (gtSupervisor): " + e.getMessage());
 			e.printStackTrace();
 		}
+
 	}
 
 	public Integer buscarId(String email) {
@@ -72,6 +55,31 @@ public class GatewaySupervisor {
 						// VERIFICA SE SUPERVISORID E NULO
 						return id;
 					}
+				}
+			}
+		} catch (SQLException e) {
+			System.err.println("Erro ao buscar pedido: " + e.getMessage());
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public SupervisorDTO buscarPorId(int id) {
+		String sql = "SELECT nome, email FROM supervisor WHERE id = ?";
+
+		try {
+			connection = Database.getInstance().getConnection();
+
+			try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+				pstmt.setInt(1, id);
+
+				try (ResultSet rs = pstmt.executeQuery()) {
+					if (rs.next()) {
+						String email = (String) rs.getObject("email");
+						String nome = (String) rs.getObject("nome");
+						return new SupervisorDTO(nome, email);
+					}
+					return null;
 				}
 			}
 		} catch (SQLException e) {

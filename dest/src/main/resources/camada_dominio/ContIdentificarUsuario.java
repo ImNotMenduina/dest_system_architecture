@@ -1,32 +1,63 @@
 package camada_dominio;
 
+import java.io.IOException;
+
+import camada_dados.GatewayUser;
 import entidades.UsuarioDTO;
-import entidades.UsuarioDTO.Situacao;
 import exception.LoginInvalidoEx;
 import exception.UsuarioInvalidoEx;
+import exception.UsuarioLogadoEx;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
-public class ContIdentificarUsuario {
+public class ContIdentificarUsuario extends HttpServlet {
+	private static final long serialVersionUID = 1L;
 	
-	public enum Tipos {
-		IDENTIFICAR;
+	private GatewayUser dados = new GatewayUser();
+	
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		String email = request.getParameter("email");
+		String senha = request.getParameter("password");
+		
+		RequestDispatcher dispatcher = null;
+		UsuarioDTO user = null;		
+		boolean log = false;
+		
+		try {
+			//HTTP SESSION - INICIA UMA SESSÃO PARA O CLIENTE
+			HttpSession session = request.getSession(false);
+			
+			if (session != null && session.getAttribute("email") != null) {
+				log = true;
+			}
+			
+			Command rt = new IdentificarUsuarioRTC(email, senha, this, log);
+			user = (UsuarioDTO) rt.executar();
+			
+			session.setAttribute("email", user.getEmail());
+			request.setAttribute("mensagem", "Bem-vindo(a) " + user.getEmail());
+			dispatcher = request.getRequestDispatcher("index.html");
+		} catch (UsuarioInvalidoEx e) {
+			request.setAttribute("mensagem", "ERRO: " + e.getMessage());
+			dispatcher = request.getRequestDispatcher("login.jsp");
+		} catch (LoginInvalidoEx e) {
+			request.setAttribute("mensagem", "ERRO: " + e.getMessage());
+			dispatcher = request.getRequestDispatcher("login.jsp");
+		} catch (UsuarioLogadoEx e) {
+			request.setAttribute("mensagem", "ERRO: " + e.getMessage());
+			dispatcher = request.getRequestDispatcher("login.jsp");
+		}
+		dispatcher.forward(request, response);
 	}
 
-	public UsuarioDTO servico(Tipos tipoServico, String email, String senha) {
-		switch (tipoServico) {
-		case IDENTIFICAR:
-			
-			Command rt = new IdentificarUsuarioRTC(email, senha);
-			
-			try {
-				return (UsuarioDTO) rt.executar();
-			} catch (UsuarioInvalidoEx e) {
-				return new UsuarioDTO(false, Situacao.USUARIO_INVALIDO);
-			} catch (LoginInvalidoEx e) {
-				return new UsuarioDTO(false, Situacao.LOGIN_INVALIDO);
-			}
+	public UsuarioDTO buscarUsuario(String email, String senha) {
 		
-		default:
-			return null;
-		}
+		return dados.buscar(email, senha);
 	}
 }

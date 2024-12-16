@@ -1,62 +1,90 @@
 package camada_dominio;
 
-import camada_dominio.ContCriarPedidoEstagio.Tipos;
+import java.io.IOException;
+
+import camada_dados.GatewayPedido;
 import entidades.SituacaoDiscenteDTO;
-import entidades.SituacaoDiscenteDTO.Situacao;
 import entidades.SituacaoPedidoDTO;
 import exception.ChMaxNCumpridaEx;
 import exception.ChNCumpridaEx;
 import exception.IRAnAtendeEx;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
-public class ContCriarPedidoEstagio {
+public class ContCriarPedidoEstagio extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+	private GatewayPedido dadosPedido = new GatewayPedido();
 
-	public enum Tipos {
-		VERIFICAR_PEDIDO, CRIAR_PEDIDO
-	}
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		Integer ira = Integer.parseInt(request.getParameter("ira"));
+		Integer chCumprida = Integer.parseInt(request.getParameter("ch_cumprida"));
+		String endereco = (String) request.getParameter("endereco");
 
-	public SituacaoDiscenteDTO servico(Tipos tipoServico, Integer ira, Integer chCumprida, String endereco) {
+		// System.out.println(ira + " " + chCumprida + " " + endereco);
 
-		switch (tipoServico) {
-		case VERIFICAR_PEDIDO:
+		SituacaoDiscenteDTO st = null;
+		try {
+			Command rt = new VerificarPedidoEstagioRTC(ira, chCumprida, endereco);
+			st = (SituacaoDiscenteDTO) rt.executar();
+			
+			HttpSession session = request.getSession();
 
-			try {
-				Command rt = new VerificarPedidoEstagioRTC(ira, chCumprida, endereco);
-				return (SituacaoDiscenteDTO) rt.executar();
-			} catch (ChNCumpridaEx e) {
-				return new SituacaoDiscenteDTO(false, Situacao.CH_N_ATENDE);
-			} catch (IRAnAtendeEx e) {
-				return new SituacaoDiscenteDTO(false, Situacao.IRA_N_ATENDE);
-			}
+			String email = (String) session.getAttribute("email");
 
-		default:
-			break;
-
+			request.setAttribute("email", email);
+			request.setAttribute("pedido", "pedido");
+			request.setAttribute("ira", ira);
+			request.setAttribute("endereco", endereco);
+			request.setAttribute("chCumprida", chCumprida);
+		} catch (ChNCumpridaEx e) {
+			//st = new SituacaoDiscenteDTO(false, Situacao.CH_N_ATENDE);
+			request.setAttribute("mensagem", "ERRO: CH Cumprida não atende aos requisitos (80h)");
+		} catch (IRAnAtendeEx e) {
+			//st = new SituacaoDiscenteDTO(false, Situacao.IRA_N_ATENDE);
+			request.setAttribute("mensagem", "ERRO: IRA não atende aos requisitos minimos (6.0)");
 		}
 
-		return null;
+		RequestDispatcher dispatcher = request.getRequestDispatcher("criarPedido.jsp");
+		dispatcher.forward(request, response);
 	}
 
-	public SituacaoPedidoDTO servico(Tipos tipoServico, String nome, String matricula, String ira, String cargaHora,
-			String endereco, String infoPrimeiro, String nomeEmpresa, String endEmpresa, String modalidade,
-			String cargaHoraSem, String valorBolsa, String resumo) {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		String nome = (String) request.getParameter("nome");
+		String matricula = (String) request.getParameter("matricula");
+		String ira = (String) request.getParameter("ira");
+		String cargaHora = (String) request.getParameter("cargaHora");
+		String endereco = (String) request.getParameter("endereco");
+		String infoPrimeiro = (String) request.getParameter("infoPrimeiro");
+		String nomeEmpresa = (String) request.getParameter("nomeEmpresa");
+		String endEmpresa = (String) request.getParameter("endEmpresa");
+		String modalidade = (String) request.getParameter("modalidade");
+		String cargaHoraSem = (String) request.getParameter("cargaHoraSem");
+		String valorBolsa = (String) request.getParameter("valorBolsa");
+		String resumo = (String) request.getParameter("resumo");
 
-		switch (tipoServico) {
-		case CRIAR_PEDIDO:
-
-			try {
-				Command rt = new CriarPedidoDeEstagioRTC(nome, matricula, ira, cargaHora, endereco, infoPrimeiro,
-						nomeEmpresa, endEmpresa, modalidade, cargaHoraSem, valorBolsa, resumo);
-				return (SituacaoPedidoDTO) rt.executar();
-			} catch (ChMaxNCumpridaEx e) {
-				return new SituacaoPedidoDTO(false);
-			}
-
-		default:
-			break;
-
+		SituacaoPedidoDTO st = null;
+		try {
+			Command rt = new CriarPedidoDeEstagioRTC(nome, matricula, ira, cargaHora, endereco, infoPrimeiro,
+					nomeEmpresa, endEmpresa, modalidade, cargaHoraSem, valorBolsa, resumo);
+			
+			st = (SituacaoPedidoDTO) rt.executar();
+			
+			dadosPedido.armazenarPedidoEstagio(nome, matricula, ira, cargaHora, endereco, infoPrimeiro, nomeEmpresa,
+					endEmpresa, modalidade, cargaHoraSem, valorBolsa, resumo);
+			
+			request.setAttribute("mensagem", "Pedido Criado !");		
+		} catch (ChMaxNCumpridaEx e) {
+			st = new SituacaoPedidoDTO(false);
+			request.setAttribute("mensagem", "ERRO: Carga horaria maxima semanal não atende aos requisitos (<= 30h)");
 		}
 
-		return null;
+		RequestDispatcher dispatcher = request.getRequestDispatcher("criarPedido.jsp");
+		dispatcher.forward(request, response);
 	}
-
 }
