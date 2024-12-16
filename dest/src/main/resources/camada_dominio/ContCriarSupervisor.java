@@ -43,7 +43,7 @@ public class ContCriarSupervisor extends HttpServlet {
 		} catch (EstagioJaSupervisionadoEx e) {
 			request.setAttribute("mensagem", "ERRO: Estágio (" + numeroPedidoEstagio + ") já supervisionado");
 		} catch (PedidoEstagioNExistenteEx e) {
-			request.setAttribute("mensagem", "ERRO: Pedido de Estágio Inexistente");
+			request.setAttribute("mensagem", "ERRO: " + e.getMessage());
 		}
 
 		RequestDispatcher dispatcher = request.getRequestDispatcher("criarSupervisor.jsp");
@@ -60,6 +60,8 @@ public class ContCriarSupervisor extends HttpServlet {
 		String cnpj = request.getParameter("cnpj");
 		Integer numeroPedido = Integer.parseInt(request.getParameter("numeroPedidoEstagio"));
 		String funcao = request.getParameter("funcao");
+		
+		RequestDispatcher dispatcher = null;
 
 		try {
 			SupervisorDTO supervisor = dadosPedido.buscarPedidoSupervisor(numeroPedido);
@@ -75,20 +77,17 @@ public class ContCriarSupervisor extends HttpServlet {
 			dadosPedido.atribuirSupervisor(numeroPedido, supervisorId);
 
 			request.setAttribute("mensagem", "Supervisor criado com sucesso.");
-			RequestDispatcher dispatcher = request.getRequestDispatcher("criarSupervisor.jsp");
-			dispatcher.forward(request, response);
+			dispatcher = request.getRequestDispatcher("criarSupervisor.jsp");
 		} catch (EmailInvalidoEx e) {
-			request.setAttribute("mensagem", "ERRO: Email inválido");
-			RequestDispatcher dispatcher = request.getRequestDispatcher("criarSupervisor.jsp");
-			dispatcher.forward(request, response);
+			request.setAttribute("mensagem", "ERRO: " + e.getMessage());
+			dispatcher = request.getRequestDispatcher("criarSupervisor.jsp");
 		} catch (CampoInvalidoEx e) {
-			request.setAttribute("mensagem", "ERRO: Um ou mais campos não preenchidos.");
-			RequestDispatcher dispatcher = request.getRequestDispatcher("criarSupervisor.jsp");
-			dispatcher.forward(request, response);
+			request.setAttribute("mensagem", "ERRO: " + e.getMessage());
+			dispatcher = request.getRequestDispatcher("criarSupervisor.jsp");
 		} catch (EstagioJaSupervisionadoEx e) {
 			request.setAttribute("mensagem", "ERRO: Estágio (" + numeroPedido + ") já supervisionado");
-			RequestDispatcher dispatcher = request.getRequestDispatcher("criarSupervisor.jsp");
-			dispatcher.forward(request, response);
+			dispatcher = request.getRequestDispatcher("criarSupervisor.jsp");
 		}
+		dispatcher.forward(request, response);
 	}
 }
