@@ -1,6 +1,5 @@
-package controladores;
+package camada_dados;
 
-import camada_dados.Database;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;

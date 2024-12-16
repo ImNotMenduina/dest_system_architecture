@@ -39,7 +39,7 @@
 	</servlet-mapping>
 
 	<listener>
-		<listener-class>controladores.DatabaseSeederListener</listener-class>
+		<listener-class>camada_dados.DatabaseSeederListener</listener-class>
 	</listener>
 
 	<session-config>
